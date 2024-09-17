@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "heroku-postbuild": "cd ../InterviewApp && npm install && npm run build"
+    "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
+    "start:client": "npm --prefix client start",
+    "start:server": "npm --prefix server start",
+    "heroku-postbuild": "npm --prefix client install && npm --prefix client run build"
   },
   "keywords": [],
   "author": "",
