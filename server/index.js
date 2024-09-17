@@ -33,6 +33,7 @@ const { exec } = require('child_process');
 const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors({
@@ -1970,24 +1971,28 @@ app.post('/run-code', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
 
 
 // my deployment code   --->
 
+
+
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+// });
+
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
-
+// Handle any other requests and serve the React app
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 // my deployment code   <---
 
 
