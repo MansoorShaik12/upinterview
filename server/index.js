@@ -59,6 +59,11 @@ app.get('/generate-token', (req, res) => {
   res.json({ token });
 });
 
+// Add this route to handle the root URL
+app.get('/', (req, res) => {
+  res.send('Welcome to the Interview App API');
+});
+
 wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     try {
