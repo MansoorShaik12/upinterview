@@ -34,12 +34,14 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+connectDB();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors({
-  origin: 'http://localhost:3002'
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3002'
 }));
-connectDB();
+
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 8080 });
 
