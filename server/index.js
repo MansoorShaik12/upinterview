@@ -77,15 +77,7 @@ app.get('/generate-token', (req, res) => {
 });
 
 
-// my deployment code   --->
 
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
-
-// my deployment code   <---
 
 const broadcastImageData = async (type, id) => {
   let updatedDocument;
@@ -1982,6 +1974,22 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+// my deployment code   --->
+
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
+// my deployment code   <---
+
 
 // async function clearAssessments() {
 //   try {
