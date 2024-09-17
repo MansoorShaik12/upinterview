@@ -20,8 +20,9 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import Editcandidate from "./EditCandidate";
 import Savenextpopup from "./Save_&_next_popup";
 import { CgInfo } from "react-icons/cg";
-import { FaMale, FaFemale, FaGenderless } from "react-icons/fa";
-import { MdOutlineImageNotSupported } from "react-icons/md";
+import maleImage from '../../../Dashboard-Part/Images/man.png';
+import femaleImage from '../../../Dashboard-Part/Images/woman.png';
+import genderlessImage from '../../../Dashboard-Part/Images/transgender.png';
 
 
 const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
@@ -748,15 +749,15 @@ const Candidate = () => {
                                     className="flex items-center gap-3"
                                     onClick={() => handleCandidateClick(candidate)}
                                   >
-                                     {candidate.imageUrl ? (
+                                                                         {candidate.imageUrl ? (
                                       <img src={candidate.imageUrl} alt="Candidate" className="w-7 h-7 rounded" />
                                     ) : (
-                                      candidate.gender === "male" ? (
-                                        <FaMale className="w-7 h-7 text-gray-900" alt="Male Avatar" />
-                                      ) : candidate.gender === "female" ? (
-                                        <FaFemale className="w-7 h-7 text-gray-900" alt="Female Avatar" />
+                                      candidate.Gender === "Male" ? (
+                                        <img src={maleImage} alt="Male Avatar" className="w-7 h-7 rounded" />
+                                      ) : candidate.Gender === "Female" ? (
+                                        <img src={femaleImage} alt="Female Avatar" className="w-7 h-7 rounded" />
                                       ) : (
-                                        <FaGenderless className="w-7 h-7 text-gray-900" alt="Other Avatar" />
+                                        <img src={genderlessImage} alt="Other Avatar" className="w-7 h-7 rounded" />
                                       )
                                     )}
 
@@ -864,10 +865,16 @@ const Candidate = () => {
                                 </div>
                                 <div className="flex">
                                   <div className="w-16 h-14 mt-3 ml-1 mr-3 overflow-hidden cursor-pointer rounded">
-                                    {candidate.imageUrl ? (
-                                      <img src={candidate.imageUrl} alt="Candidate" className="w-full h-full" />
+                                  {candidate.imageUrl ? (
+                                      <img src={candidate.imageUrl} alt="Candidate" className="w-full h-full rounded" />
                                     ) : (
-                                      < MdOutlineImageNotSupported className="w-full h-full text-gray-900" alt="Default" />
+                                      candidate.Gender === "Male" ? (
+                                        <img src={maleImage} alt="Male Avatar" className="w-full h-full rounded" />
+                                      ) : candidate.Gender === "Female" ? (
+                                        <img src={femaleImage} alt="Female Avatar" className="w-full h-full rounded" />
+                                      ) : (
+                                        <img src={genderlessImage} alt="Other Avatar" className="w-full h-full rounded" />
+                                      )
                                     )}
                                   </div>
                                   <div className="flex flex-col">

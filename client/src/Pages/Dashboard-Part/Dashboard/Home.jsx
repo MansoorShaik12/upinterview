@@ -249,6 +249,7 @@ const Home3 = () => {
             setCandidateData(sortedData);
           }
           setLastFetchedCandidates(sortedData);
+          console.log(sortedData,"sfdvdf");
         } else {
           console.error("Expected an array but got:", response.data);
         }

@@ -17,7 +17,9 @@ import axios from "axios";
 import Editteams from "./EditTeam";
 import { CgInfo } from "react-icons/cg";
 import TeamProfileDetails from "./TeamProfileDetails";
-import { MdOutlineImageNotSupported } from "react-icons/md";
+import maleImage from '../../../Dashboard-Part/Images/man.png';
+import femaleImage from '../../../Dashboard-Part/Images/woman.png';
+import genderlessImage from '../../../Dashboard-Part/Images/transgender.png';
 
 
 
@@ -680,11 +682,17 @@ const Team = () => {
                                       className="flex items-center gap-3"
                                       onClick={() => handleCandidateClick(teams)}
                                     >
-                                      {teams.imageUrl ? (
-                                        <img src={teams.imageUrl} alt="Candidate" className="w-7 h-7 rounded" />
+                                       {teams.imageUrl ? (
+                                      <img src={teams.imageUrl} alt="Candidate" className="w-7 h-7 rounded" />
+                                    ) : (
+                                      teams.Gender === "Male" ? (
+                                        <img src={maleImage} alt="Male Avatar" className="w-7 h-7 rounded" />
+                                      ) : teams.Gender === "Female" ? (
+                                        <img src={femaleImage} alt="Female Avatar" className="w-7 h-7 rounded" />
                                       ) : (
-                                        < MdOutlineImageNotSupported className="w-7 h-7 text-gray-900" alt="Default" />
-                                      )}
+                                        <img src={genderlessImage} alt="Other Avatar" className="w-7 h-7 rounded" />
+                                      )
+                                    )}
                                       {teams.LastName}
                                     </div>
                                   </td>
@@ -832,9 +840,15 @@ const Team = () => {
 
                                   <div className="w-16 h-14 mt-3 ml-1 mr-3 overflow-hidden cursor-pointer rounded">
                                     {teams.imageUrl ? (
-                                      <img src={teams.imageUrl} alt="Candidate" className="w-full h-full" />
+                                      <img src={teams.imageUrl} alt="Candidate" className="w-full h-full rounded" />
                                     ) : (
-                                      < MdOutlineImageNotSupported className="w-full h-full text-gray-900" alt="Default" />
+                                      teams.Gender === "Male" ? (
+                                        <img src={maleImage} alt="Male Avatar" className="w-full h-full rounded" />
+                                      ) : teams.Gender === "Female" ? (
+                                        <img src={femaleImage} alt="Female Avatar" className="w-full h-full rounded" />
+                                      ) : (
+                                        <img src={genderlessImage} alt="Other Avatar" className="w-full h-full rounded" />
+                                      )
                                     )}
                                   </div>
                                   <div className="flex flex-col">

@@ -158,7 +158,7 @@ const QuestionBank = () => {
         ws.onmessage = (event) => {
             const { type, data } = JSON.parse(event.data);
             if (type === 'question') {
-                setQuestionProfile(data);
+                // setQuestionProfile(data);
                 setNotification("A new question has been successfully created!");
 
                 setTimeout(() => {
@@ -233,9 +233,9 @@ const QuestionBank = () => {
         setSidebarOpen(!sidebarOpen);
     };
 
-    const closeSidebar = useCallback(() => {
+    const closeSidebar = () => {
         setSidebarOpen(false);
-    }, []);
+    };
 
     const handleOutsideClick = useCallback((event) => {
         if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {

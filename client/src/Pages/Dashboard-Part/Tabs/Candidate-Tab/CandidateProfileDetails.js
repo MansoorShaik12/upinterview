@@ -3,11 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
-import EditCandidateForm from "./EditCandidate";
-import { TbFoldersOff } from "react-icons/tb";
-import { MdOutlineImageNotSupported } from "react-icons/md";
+import maleImage from '../../../Dashboard-Part/Images/man.png';
+import femaleImage from '../../../Dashboard-Part/Images/woman.png';
+import genderlessImage from '../../../Dashboard-Part/Images/transgender.png';
 import axios from "axios";
 import { format } from 'date-fns';
+import EditCandidateForm from "./EditCandidate";
+import { TbFoldersOff } from "react-icons/tb";
 
 const CandidateDetails = ({ candidate, onCloseprofile }) => {
   useEffect(() => {
@@ -386,9 +388,15 @@ const CandidateDetails = ({ candidate, onCloseprofile }) => {
                         <div className="flex justify-end text-center">
                           <div>
                           {candidate.imageUrl ? (
-                                    <img src={candidate.imageUrl} alt="Candidate" className="w-32 h-32 rounded border border-gray-300" />
+                                    <img src={candidate.imageUrl} alt="Candidate" className="w-32 h-32 rounded" />
                                   ) : (
-                                    < MdOutlineImageNotSupported className="w-32 h-32 text-gray-900" alt="Default" />
+                                    candidate.Gender === "Male" ? (
+                                      <img src={maleImage} alt="Male Avatar" className="w-32 h-32 rounded" />
+                                    ) : candidate.Gender === "Female" ? (
+                                      <img src={femaleImage} alt="Female Avatar" className="w-32 h-32 rounded" />
+                                    ) : (
+                                      <img src={genderlessImage} alt="Other Avatar" className="w-32 h-32 rounded" />
+                                    )
                                   )}
                           </div>
                         </div>

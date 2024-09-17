@@ -126,6 +126,11 @@ const Navbar = () => {
     setIsLegalDropdownOpen(!isLegalDropdownOpen);
   };
 
+
+  // const [profileImage, setProfileImage] = useState(null);
+  // const [profileDropdown, setProfileDropdown] = useState(false);
+  // const profileRef = useRef(null);
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {

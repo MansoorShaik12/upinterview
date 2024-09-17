@@ -102,9 +102,13 @@ const Contact = () => {
     setActionViewMore(usersId === actionViewMore ? null : usersId);
   };
 
+  // const handleUserClick = (Contact) => {
+  //   navigate("/contactprofiledetails", { state: {Contact } });
+  // };
 
   const handleEditClick = (users) => {
-    setActionViewMore(null);
+    // setSidebarOpen(true);
+    setActionViewMore(null); // Close the action menu
   };
 
   return (

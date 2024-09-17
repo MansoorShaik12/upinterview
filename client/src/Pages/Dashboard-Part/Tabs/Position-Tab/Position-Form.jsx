@@ -139,13 +139,13 @@ const Position_Form = ({ onClose, onPositionAdded }) => {
       const newPosition = response.data;
       console.log("Position created:", response.data);
       onPositionAdded(newPosition);
-      resetForm();
-      onClose();
     } catch (error) {
       console.error("Error creating position:", error);
     }
   
     setUnsavedChanges(false);
+    resetForm();
+    onClose();
   };
 
   useEffect(() => {

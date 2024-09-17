@@ -14,7 +14,7 @@ const ContactProfileDetails = () => {
     document.title = "ContactProfileDetails";
   }, []);
   const navigate = useNavigate();
-  const contactData = location.state?.Contacts;
+  const contactData = location.state?.Contacts; // This should match the key used in navigate
   const [contact] = useState(contactData);
   console.log(contactData);
 

@@ -15,6 +15,9 @@ import { LuUser2 } from "react-icons/lu";
 import { TiContacts } from "react-icons/ti";
 import { ImProfile } from "react-icons/im";
 
+
+
+
 const AppViewMore = ({ isModalOpen, closeModal }) => {
 
     const apps = [

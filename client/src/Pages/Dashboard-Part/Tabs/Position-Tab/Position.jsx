@@ -824,8 +824,8 @@ const Position = () => {
                                                                                 </span>
                                                                             </p>
                                                                         </div>
-                                                                        <div>
-                                                                            <br />
+                                                                        <div className="mt-7">
+                                                                            
                                                                             <p className="text-gray-700">
                                                                                 {position.companyname}
                                                                             </p>

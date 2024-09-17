@@ -5,7 +5,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { MdOutlineCancel } from "react-icons/md";
 import EditTeamsForm from "./EditTeam";
-import { MdOutlineImageNotSupported } from "react-icons/md";
+import maleImage from '../../../Dashboard-Part/Images/man.png';
+import femaleImage from '../../../Dashboard-Part/Images/woman.png';
+import genderlessImage from '../../../Dashboard-Part/Images/transgender.png';
 
 const TeamDetails = ({ candidate, onCloseprofile }) => {
   // const navigate = useNavigate();
@@ -353,11 +355,17 @@ const TeamDetails = ({ candidate, onCloseprofile }) => {
                           <div>
                             <div className="flex justify-end text-center mr-5">
                               <div>
-                                {candidate.imageUrl ? (
-                                  <img src={candidate.imageUrl} alt="Candidate" className="w-32 h-32 rounded border border-gray-300" />
-                                ) : (
-                                  < MdOutlineImageNotSupported className="w-32 h-32 text-gray-900" alt="Default" />
-                                )}
+                              {candidate.imageUrl ? (
+                                    <img src={candidate.imageUrl} alt="Candidate" className="w-32 h-32 rounded" />
+                                  ) : (
+                                    candidate.Gender === "Male" ? (
+                                      <img src={maleImage} alt="Male Avatar" className="w-32 h-32 rounded" />
+                                    ) : candidate.Gender === "Female" ? (
+                                      <img src={femaleImage} alt="Female Avatar" className="w-32 h-32 rounded" />
+                                    ) : (
+                                      <img src={genderlessImage} alt="Other Avatar" className="w-32 h-32 rounded" />
+                                    )
+                                  )}
                               </div>
                             </div>
                           </div>

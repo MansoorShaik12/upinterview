@@ -86,9 +86,6 @@ const Interviewcq = ({ onClose, onOutsideClick }) => {
             Options: mcqOptions.map(option => option.option),
             createdBy: userId
         };
-
-        console.log("Data being sent:", questionData);
-
         try {
             const questionResponse = await axios.post('http://localhost:3000/newquestion', questionData);
             console.log('Question created:', questionResponse.data);
