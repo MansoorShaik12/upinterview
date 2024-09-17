@@ -113,7 +113,7 @@ const AssessmentPopup = ({ assessment, onCloseprofile }) => {
     const fetchCandidatesData = async () => {
       try {
         const candidatePromises = assessment.CandidateIds.map(candidateId =>
-          axios.get(`http://localhost:3000/candidate/${candidateId}`)
+          axios.get(`http://localhost:5000/candidate/${candidateId}`)
         );
         const candidatesResponses = await Promise.all(candidatePromises);
         const candidates = candidatesResponses.map(response => response.data);

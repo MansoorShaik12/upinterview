@@ -318,7 +318,7 @@ const Viewpage2 = () => {
   useEffect(() => {
     const fetchCandidateData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/candidate");
+        const response = await axios.get("http://localhost:5000/candidate");
         if (Array.isArray(response.data)) {
           setCandidateData(response.data);
         } else {

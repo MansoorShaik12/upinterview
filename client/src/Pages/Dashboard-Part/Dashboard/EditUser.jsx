@@ -79,7 +79,7 @@ const handleSubmit = async (e) => {
 
   try {
       // Save contact data
-      const userResponse = await axios.put('http://localhost:3000/updateuser', dataToSubmit);
+      const userResponse = await axios.put('http://localhost:5000/updateuser', dataToSubmit);
       console.log('User updated  successfully:', userResponse.data);
       
       navigate('/users', { state: { data: userResponse.data } });
@@ -173,7 +173,7 @@ const handleSubmit = async (e) => {
   useEffect(() => {
     const fetchsetcurrentrolesData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/roles");
+        const response = await axios.get("http://localhost:5000/roles");
         setCurrentRole(response.data);
       } catch (error) {
         console.error("Error fetching roles data:", error);

@@ -300,7 +300,7 @@ const MultiStepForm = () => {
     useEffect(() => {
         const fetchindustriesData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/industries');
+                const response = await axios.get('http://localhost:5000/industries');
                 setIndustries(response.data);
             } catch (error) {
                 console.error('Error fetching industries data:', error);
@@ -319,7 +319,7 @@ const MultiStepForm = () => {
     useEffect(() => {
         const fetchlocationsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/locations');
+                const response = await axios.get('http://localhost:5000/locations');
                 setLocations(response.data);
             } catch (error) {
                 console.error('Error fetching locations data:', error);
@@ -341,7 +341,7 @@ const MultiStepForm = () => {
     useEffect(() => {
         const fetchsetcurrentrolesData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/roles');
+                const response = await axios.get('http://localhost:5000/roles');
                 setCurrentRole(response.data);
             } catch (error) {
                 console.error('Error fetching roles data:', error);
@@ -363,7 +363,7 @@ const MultiStepForm = () => {
     useEffect(() => {
         const fetchtechnologyData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/technology');
+                const response = await axios.get('http://localhost:5000/technology');
                 setServices(response.data);
             } catch (error) {
                 console.error('Error fetching roles data:', error);
@@ -405,7 +405,7 @@ const MultiStepForm = () => {
     useEffect(() => {
         const fetchSkillsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/skills');
+                const response = await axios.get('http://localhost:5000/skills');
                 setSkills(response.data);
             } catch (error) {
                 console.error('Error fetching roles data:', error);
@@ -602,7 +602,7 @@ const MultiStepForm = () => {
         // Check for User ID availability
         if (name === "UserId") {
             try {
-                const response = await axios.get(`http://localhost:3000/check-userid/${value}`);
+                const response = await axios.get(`http://localhost:5000/check-userid/${value}`);
                 if (response.data.exists) {
                     setUserIdError('That User ID is already taken. Please choose another.');
                 } else {
@@ -616,7 +616,7 @@ const MultiStepForm = () => {
         // Check for Email availability
         if (name === "Email") {
             try {
-                const response = await axios.get(`http://localhost:3000/check-email/${value}`);
+                const response = await axios.get(`http://localhost:5000/check-email/${value}`);
                 if (response.data.exists) {
                     setEmailError('That email is already in use. Please choose another.');
                 } else {
@@ -764,23 +764,23 @@ const MultiStepForm = () => {
         console.log('Submitting form with availabilityData:', availabilityData);
 
         try {
-            const userResponse = await axios.post('http://localhost:3000/users', userData);
+            const userResponse = await axios.post('http://localhost:5000/users', userData);
             console.log('User saved successfully:', userResponse.data);
 
             contactData.user = userResponse.data._id;
-            const contactResponse = await axios.post('http://localhost:3000/contacts', contactData);
+            const contactResponse = await axios.post('http://localhost:5000/contacts', contactData);
             console.log('Contact saved successfully:', contactResponse.data);
 
             const availabilityIds = [];
             for (const availability of availabilityData) {
                 availability.contact = contactResponse.data._id;
-                const availabilityResponse = await axios.post('http://localhost:3000/loginavailability', availability);
+                const availabilityResponse = await axios.post('http://localhost:5000/loginavailability', availability);
                 console.log('Availability saved successfully:', availabilityResponse.data);
                 availabilityIds.push(availabilityResponse.data._id);
             }
 
             // Update contact with availability IDs
-            await axios.put(`http://localhost:3000/contacts/${contactResponse.data._id}`, { availability: availabilityIds });
+            await axios.put(`http://localhost:5000/contacts/${contactResponse.data._id}`, { availability: availabilityIds });
 
             localStorage.setItem('userId', userResponse.data._id);
             localStorage.setItem('sub', user.sub);
@@ -797,7 +797,7 @@ const MultiStepForm = () => {
                 imageData.append("id", userResponse.data._id);
 
                 try {
-                    await axios.post("http://localhost:3000/upload", imageData, {
+                    await axios.post("http://localhost:5000/upload", imageData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -812,7 +812,7 @@ const MultiStepForm = () => {
                 imageData.set("id", contactResponse.data._id);
 
                 try {
-                    await axios.post("http://localhost:3000/upload", imageData, {
+                    await axios.post("http://localhost:5000/upload", imageData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },

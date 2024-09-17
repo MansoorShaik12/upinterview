@@ -53,7 +53,7 @@ const MockSchedulelater = ({ isOpen, onClose, onOutsideClick}) => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/mockinterview', {
+            const response = await axios.post('http://localhost:5000/mockinterview', {
                 ...formData,
                 Skills: selectedSkill,
                 DateTime: confirmedDateTime,
@@ -99,7 +99,7 @@ const MockSchedulelater = ({ isOpen, onClose, onOutsideClick}) => {
     useEffect(() => {
         const fetchSkillsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/skills');
+                const response = await axios.get('http://localhost:5000/skills');
                 setSkills(response.data);
             } catch (error) {
                 console.error('Error fetching skills data:', error);

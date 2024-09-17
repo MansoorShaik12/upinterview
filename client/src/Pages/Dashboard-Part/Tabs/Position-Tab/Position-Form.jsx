@@ -122,7 +122,7 @@ const Position_Form = ({ onClose, onPositionAdded }) => {
   
     try {
       // Check if a position with the same title, company, and experience range already exists
-      const checkResponse = await axios.post("http://localhost:3000/position/check", {
+      const checkResponse = await axios.post("http://localhost:5000/position/check", {
         title: formData.title,
         companyname: selectedCompany,
         minexperience: formData.minexperience,
@@ -135,7 +135,7 @@ const Position_Form = ({ onClose, onPositionAdded }) => {
       }
   
       // If no such position exists, proceed with creation
-      const response = await axios.post("http://localhost:3000/position", data);
+      const response = await axios.post("http://localhost:5000/position", data);
       const newPosition = response.data;
       console.log("Position created:", response.data);
       onPositionAdded(newPosition);
@@ -166,7 +166,7 @@ const Position_Form = ({ onClose, onPositionAdded }) => {
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
       } catch (error) {
         console.error("Error fetching SkillsData:", error);
@@ -287,7 +287,7 @@ const Position_Form = ({ onClose, onPositionAdded }) => {
   useEffect(() => {
     const fetchCompaniesData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/company");
+        const response = await axios.get("http://localhost:5000/company");
         setCompanies(response.data);
       } catch (error) {
         console.error("Error fetching Companies data:", error);

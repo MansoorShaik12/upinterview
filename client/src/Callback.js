@@ -5,13 +5,13 @@ import axios from 'axios';
 
 const Callback = () => {
   const { isAuthenticated, user, isLoading } = useAuth0();
-  console.log("usergot", user);
+  
   const navigate = useNavigate();
   const [isCheckingUser, setIsCheckingUser] = useState(true);
 
   const checkUserExistence = async (userSub) => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/${userSub}`);
+      const response = await axios.get(`http://localhost:5000/users/${userSub}`);
       return response.status === 200 && response.data;
     } catch (error) {
       console.error('Error checking user existence:', error);
@@ -21,7 +21,7 @@ const Callback = () => {
 
   const handleRedirect = async () => {
     if (isAuthenticated && user && user.sub) {
-      console.log("Authenticated user:", user);
+      
 
       const userExists = await checkUserExistence(user.sub);
 
@@ -31,7 +31,7 @@ const Callback = () => {
         navigate('/profile3');
       }
     } else {
-      console.log("User not authenticated or user data not found");
+      
       navigate('/');
     }
     setIsCheckingUser(false);

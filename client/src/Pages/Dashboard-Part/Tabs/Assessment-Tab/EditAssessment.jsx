@@ -52,7 +52,7 @@ const EditAssessment = forwardRef(({ onClose, assessmentId, candidate1 }, ref) =
   useEffect(() => {
     const fetchAssessment = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/assessment/${assessmentId}`);
+        const response = await axios.get(`http://localhost:5000/assessment/${assessmentId}`);
         const assessment = response.data;
         setFormData({
           AssessmentTitle: assessment.AssessmentTitle,
@@ -83,7 +83,7 @@ const EditAssessment = forwardRef(({ onClose, assessmentId, candidate1 }, ref) =
   useEffect(() => {
     const fetchPositionsData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/position?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/position?CreatedBy=${userId}`);
         setPositions(response.data);
       } catch (error) {
         console.error("Error fetching position data:", error);
@@ -119,7 +119,7 @@ const EditAssessment = forwardRef(({ onClose, assessmentId, candidate1 }, ref) =
         ModifiedDate: new Date(),
       };
 
-      const response = await axios.put(`http://localhost:3000/assessment/${assessmentId}`, updatedAssessment);
+      const response = await axios.put(`http://localhost:5000/assessment/${assessmentId}`, updatedAssessment);
 
       console.log(response.data);
       onClose();
@@ -233,7 +233,7 @@ const EditAssessment = forwardRef(({ onClose, assessmentId, candidate1 }, ref) =
     const fetchPositions = async () => {
       try {
         console.log(`Fetching positions for user ID: ${userId}`);
-        const response = await axios.get(`http://localhost:3000/position?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/position?CreatedBy=${userId}`);
         console.log('Fetched positions:', response.data);
         setPositions(response.data);
       } catch (error) {
@@ -482,7 +482,7 @@ const EditAssessment = forwardRef(({ onClose, assessmentId, candidate1 }, ref) =
   useEffect(() => {
     const fetchSectionData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/sections");
+        const response = await axios.get("http://localhost:5000/sections");
         setSelectedIcons(response.data);
         const IconData = response.data.filter(
           (data) => data.Position === position
@@ -603,7 +603,7 @@ const EditAssessment = forwardRef(({ onClose, assessmentId, candidate1 }, ref) =
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/newquestion');
+        const response = await axios.get('http://localhost:5000/newquestion');
         setQuestionsBySection(response.data);
 
       } catch (error) {

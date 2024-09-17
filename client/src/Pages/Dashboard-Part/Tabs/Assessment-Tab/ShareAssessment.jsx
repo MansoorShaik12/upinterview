@@ -65,11 +65,11 @@ const ShareAssessment = ({
     const fetchCandidateData = async () => {
       try {
 
-        const response = await axios.get(`http://localhost:3000/candidate?createdBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/candidate?createdBy=${userId}`);
         if (Array.isArray(response.data)) {
           const candidatesWithImages = response.data.map((candidate) => {
             if (candidate.ImageData && candidate.ImageData.filename) {
-              const imageUrl = `http://localhost:3000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
+              const imageUrl = `http://localhost:5000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
               return { ...candidate, imageUrl };
             }
             return candidate;
@@ -92,7 +92,7 @@ const ShareAssessment = ({
   //   const fetchData = async () => {
   //     try {
   //       const [questionsResponse] = await Promise.all([
-  //         axios.get("http://localhost:3000/sectionquestion"),
+  //         axios.get("http://localhost:5000/sectionquestion"),
   //       ]);
   //       setInterviewQuestion(questionsResponse.data);
   //     } catch (error) {
@@ -109,13 +109,13 @@ const ShareAssessment = ({
 
   // const sendEmail = async (candidate) => {
   //   try {
-  //     await axios.post("http://localhost:3000/sections", selectedIcons);
+  //     await axios.post("http://localhost:5000/sections", selectedIcons);
   //     await axios.post(
-  //       "http://localhost:3000/sectionquestion",
+  //       "http://localhost:5000/sectionquestion",
   //       InterviewQuestion
   //     );
 
-  //     const response = await axios.post("http://localhost:3000/send-email", {
+  //     const response = await axios.post("http://localhost:5000/send-email", {
   //       email: candidate.Email,
   //       link: `http://localhost:3002/assessmenttest?assessmentId=${candidate._id}`,
   //       sections: selectedIcons2,
@@ -129,7 +129,7 @@ const ShareAssessment = ({
   // useEffect(() => {
   //   const fetchSectionData = async () => {
   //     try {
-  //       const response = await axios.get("http://localhost:3000/sections");
+  //       const response = await axios.get("http://localhost:5000/sections");
   //       setSelectedIcons(response.data);
   //       const IconData = response.data.filter(
   //         (data) => data.Position === position
@@ -226,7 +226,7 @@ const ShareAssessment = ({
 
 
   if (!isOpen) return null;
-  const shareLink = `http://localhost:3000/assessment/${assessmentId}/share`;
+  const shareLink = `http://localhost:5000/assessment/${assessmentId}/share`;
 
 
   const handleShareClick = async () => {
@@ -241,12 +241,12 @@ const ShareAssessment = ({
         return candidate ? candidate._id : null;
       }).filter(id => id !== null);
 
-      await axios.post('http://localhost:3000/update-candidates', {
+      await axios.post('http://localhost:5000/update-candidates', {
         candidateIds: selectedCandidateIds,
         assessmentId
       });
 
-      const response = await axios.post('http://localhost:3000/send-assessment-link', {
+      const response = await axios.post('http://localhost:5000/send-assessment-link', {
         candidateEmails: selectedCandidateIds.map(id => {
           const candidate = candidateData.find(c => c._id === id);
           return candidate ? candidate.Email : null;

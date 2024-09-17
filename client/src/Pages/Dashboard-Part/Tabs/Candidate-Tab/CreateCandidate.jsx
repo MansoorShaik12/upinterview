@@ -56,7 +56,7 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
   useEffect(() => {
     const fetchCandidateData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/candidate");
+        const response = await axios.get("http://localhost:5000/candidate");
         if (Array.isArray(response.data)) {
           setCandidateData(response.data);
         } else {
@@ -203,7 +203,7 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
 
     try {
       // First, create the candidate
-      const response = await axios.post("http://localhost:3000/candidate", data);
+      const response = await axios.post("http://localhost:5000/candidate", data);
       const candidateId = response.data._id;
 
       // If an image is selected, upload it
@@ -214,7 +214,7 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
         imageData.append("id", candidateId);
 
         try {
-          await axios.post("http://localhost:3000/upload", imageData, {
+          await axios.post("http://localhost:5000/upload", imageData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -313,18 +313,11 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
     };
   }, []);
 
-  // skills table
-  // const [rows, setRows] = useState([
-  //   { skill: "", experience: "", expertise: "" },
-  //   { skill: "", experience: "", expertise: "" },
-  //   { skill: "", experience: "", expertise: "" },
-  // ]);
-
   const [skills, setSkills] = useState([]);
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
         setFilteredSkills(response.data);
       } catch (error) {
@@ -433,7 +426,7 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
   useEffect(() => {
     const fetchQualificationData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/qualification");
+        const response = await axios.get("http://localhost:5000/qualification");
         setQualification(response.data);
       } catch (error) {
         console.error("Error fetching Qualification data:", error);
@@ -448,7 +441,7 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
     const fetchCollegeData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/universitycollege"
+          "http://localhost:5000/universitycollege"
         );
         setCollege(response.data);
       } catch (error) {
@@ -461,7 +454,7 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
       } catch (error) {
         console.error("Error fetching SkillsData:", error);
@@ -758,7 +751,7 @@ const CreateCandidate = ({ isOpen, onClose, onCandidateAdded }) => {
   useEffect(() => {
     const fetchSkillsData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/position?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/position?CreatedBy=${userId}`);
         setSkillsData(response.data);
       } catch (error) {
         console.error("Error fetching position data:", error);

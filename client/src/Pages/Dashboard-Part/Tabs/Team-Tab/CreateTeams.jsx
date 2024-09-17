@@ -98,7 +98,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/contacts/${userId}/details`);
+        const response = await axios.get(`http://localhost:5000/contacts/${userId}/details`);
         if (response.data) {
           setSelectedTimezone1({ value: response.data.TimeZone, label: response.data.TimeZone });
           setFormData((prevFormData) => ({
@@ -265,7 +265,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
 
     try {
       // Create the team
-      const teamResponse = await axios.post("http://localhost:3000/team", teamData);
+      const teamResponse = await axios.post("http://localhost:5000/team", teamData);
       console.log("Team created:", teamResponse.data);
 
       // Upload the image if it exists
@@ -276,7 +276,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
         imageData.append("id", teamResponse.data._id);
 
         try {
-          await axios.post("http://localhost:3000/upload", imageData, {
+          await axios.post("http://localhost:5000/upload", imageData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -290,7 +290,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
       // Handle availability data
       availabilityData.TeamId = teamResponse.data._id;
       console.log("Availability Data:", availabilityData);
-      const availabilityResponse = await axios.post("http://localhost:3000/teamavailability", availabilityData);
+      const availabilityResponse = await axios.post("http://localhost:5000/teamavailability", availabilityData);
       console.log("Availability created:", availabilityResponse.data);
 
       onClose();
@@ -356,7 +356,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
   useEffect(() => {
     const fetchLocationsData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/locations');
+        const response = await axios.get('http://localhost:5000/locations');
         setLocations(response.data);
       } catch (error) {
         console.error('Error fetching locations data:', error);
@@ -454,7 +454,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
   useEffect(() => {
     const fetchCompaniesData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/company");
+        const response = await axios.get("http://localhost:5000/company");
         setCompanies(response.data);
       } catch (error) {
         console.error("Error fetching Companies data:", error);
@@ -474,7 +474,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
   useEffect(() => {
     const fetchtechnologyData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/technology");
+        const response = await axios.get("http://localhost:5000/technology");
         setTechnology(response.data);
       } catch (error) {
         console.error("Error fetching technology data:", error);
@@ -487,7 +487,7 @@ const CreateTeams = forwardRef(({ onClose, onOutsideClick }, ref) => {
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
       } catch (error) {
         console.error("Error fetching SkillsData:", error);

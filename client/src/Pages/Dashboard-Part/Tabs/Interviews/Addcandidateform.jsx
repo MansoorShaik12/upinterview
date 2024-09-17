@@ -49,7 +49,7 @@ const CreateCandidate = ({ onClose }) => {
     };
 
     try {
-      const response = await axios.post("http://localhost:3000/candidate", data);
+      const response = await axios.post("http://localhost:5000/candidate", data);
       console.log(response);
       setFormData({
         FirstName: "",
@@ -103,7 +103,7 @@ const CreateCandidate = ({ onClose }) => {
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
       } catch (error) {
         console.error("Error fetching SkillsData:", error);
@@ -195,7 +195,7 @@ const CreateCandidate = ({ onClose }) => {
   useEffect(() => {
     const fetchQualificationData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/qualification");
+        const response = await axios.get("http://localhost:5000/qualification");
         setQualification(response.data);
       } catch (error) {
         console.error("Error fetching Qualification data:", error);
@@ -210,7 +210,7 @@ const CreateCandidate = ({ onClose }) => {
     const fetchCollegeData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/universitycollege"
+          "http://localhost:5000/universitycollege"
         );
         setCollege(response.data);
       } catch (error) {
@@ -223,7 +223,7 @@ const CreateCandidate = ({ onClose }) => {
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
       } catch (error) {
         console.error("Error fetching SkillsData:", error);

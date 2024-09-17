@@ -13,7 +13,7 @@ const AddQuestion2 = React.forwardRef(({ isOpen, onClose, onOutsideClick, positi
         setIsCustomizeClicked(false);
         setSectionName('');
     };
-
+    
     const onCustomizeClick = (event) => {
         event.stopPropagation();
         setIsCustomizeClicked(true);

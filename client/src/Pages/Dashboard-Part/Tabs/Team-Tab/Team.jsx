@@ -308,7 +308,7 @@ const Team = () => {
     setSelectedTeam(teams);
 
     try {
-      const response = await axios.get(`http://localhost:3000/team/${teams._id}/availability`);
+      const response = await axios.get(`http://localhost:5000/team/${teams._id}/availability`);
       const availabilityData = response.data;
       setSelectedTeam({ ...teams, availability: availabilityData.Availability });
     } catch (error) {
@@ -352,11 +352,11 @@ const Team = () => {
     const fetchTeamsData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:3000/team?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/team?CreatedBy=${userId}`);
         if (Array.isArray(response.data)) {
           const teamsWithImages = response.data.map((team) => {
             if (team.ImageData && team.ImageData.filename) {
-              const imageUrl = `http://localhost:3000/${team.ImageData.path.replace(/\\/g, '/')}`;
+              const imageUrl = `http://localhost:5000/${team.ImageData.path.replace(/\\/g, '/')}`;
               return { ...team, imageUrl };
             }
             return team;
@@ -484,7 +484,7 @@ const Team = () => {
   const handleEditClick = async (teams) => {
     console.log("Selected candidate for editing:", teams); // Log the selected candidate
     try {
-      const response = await axios.get(`http://localhost:3000/team/${teams._id}/availability`);
+      const response = await axios.get(`http://localhost:5000/team/${teams._id}/availability`);
       const availability = response.data.Availability;
       setSelectedcandidate({ ...teams, availability });
     } catch (error) {

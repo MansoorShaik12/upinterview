@@ -480,7 +480,7 @@ const MockInterview = () => {
     const fetchmockinterviewData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:3000/mockinterview");
+        const response = await axios.get("http://localhost:5000/mockinterview");
         setmockinterviewData(response.data);
       } catch (error) {
         console.error("Error fetching mockinterview data:", error);
@@ -585,12 +585,12 @@ const MockInterview = () => {
   const handlePopupConfirm = async (e, _id) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://localhost:3000/mockinterview/${currentInterviewId}`, {
+      const response = await axios.put(`http://localhost:5000/mockinterview/${currentInterviewId}`, {
         _id: currentInterviewId,
         Status: "ScheduleCancel",
       });
 
-      const notificationResponse = await axios.post('http://localhost:3000/notification', {
+      const notificationResponse = await axios.post('http://localhost:5000/notification', {
         Body: 'Interview Cancelled successfully',
         Status: "ScheduleCancel",
       });
@@ -627,7 +627,7 @@ const MockInterview = () => {
 
   const handleClick = async () => {
     try {
-      const response = await axios.put('http://localhost:3000/interview/reschedule', {
+      const response = await axios.put('http://localhost:5000/interview/reschedule', {
         id: selectedcandidate._id,
       });
       console.log('Updated interview:', response.data);

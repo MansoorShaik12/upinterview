@@ -19,7 +19,7 @@ const Schedulenow = ({ isOpen1, onClose1, onOutsideClick1, lastName, setSidebarO
     useEffect(() => {
         const fetchSkillsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/position');
+                const response = await axios.get('http://localhost:5000/position');
                 console.log('Position data:', response.data);
                 setSkillsData(response.data);
             } catch (error) {
@@ -34,7 +34,7 @@ const Schedulenow = ({ isOpen1, onClose1, onOutsideClick1, lastName, setSidebarO
     useEffect(() => {
         const fetchTeamsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/team');
+                const response = await axios.get('http://localhost:5000/team');
                 console.log('Teams data:', response.data);
                 setTeamData(response.data);
             } catch (error) {
@@ -88,7 +88,7 @@ const Schedulenow = ({ isOpen1, onClose1, onOutsideClick1, lastName, setSidebarO
         try {
             const { InterviewTitle, DateTime, Duration } = formData;
             const teamMemberNames = selectedTeamMembers.map((member) => member.name);
-            const interviewResponse = await axios.post('http://localhost:3000/interview', {
+            const interviewResponse = await axios.post('http://localhost:5000/interview', {
                 ...formData,
                 InterviewType: selectedtype,
                 Position: selectedPosition,
@@ -102,7 +102,7 @@ const Schedulenow = ({ isOpen1, onClose1, onOutsideClick1, lastName, setSidebarO
 
             const Body = `Interview successfully scheduled for Technical Round (${InterviewTitle})on ${DateTime} via ${selectedtype}, scheduled for ${Duration}.`;
 
-            const notificationResponse = await axios.post('http://localhost:3000/notification', {
+            const notificationResponse = await axios.post('http://localhost:5000/notification', {
                 Title: InterviewTitle,
                 Body: Body,
                 InterviewType: selectedtype,
@@ -255,7 +255,7 @@ const Schedulenow = ({ isOpen1, onClose1, onOutsideClick1, lastName, setSidebarO
     useEffect(() => {
         const fetchCandidateData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/candidate');
+                const response = await axios.get('http://localhost:5000/candidate');
                 console.log('Candidate data:', response.data);
             } catch (error) {
                 console.error('Error fetching candidate data:', error);

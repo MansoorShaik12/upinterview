@@ -73,7 +73,7 @@ const MockSchedulelater = ({ isOpen, onClose, candidate1 }) => {
             return;
         }
         try {
-            const response = await axios.put(`http://localhost:3000/updateMockInterview`, {
+            const response = await axios.put(`http://localhost:5000/updateMockInterview`, {
                 _id: _id,
                 ...formData,
                 Skills: selectedSkill,
@@ -120,7 +120,7 @@ const MockSchedulelater = ({ isOpen, onClose, candidate1 }) => {
     //         return;
     //     }
     //     try {
-    //         const response = await axios.put(`http://localhost:3000/updateMockInterview`, {
+    //         const response = await axios.put(`http://localhost:5000/updateMockInterview`, {
     //             _id: _id,
     //             ...formData,
     //             Skills: selectedSkill,
@@ -162,7 +162,7 @@ const MockSchedulelater = ({ isOpen, onClose, candidate1 }) => {
     useEffect(() => {
         const fetchSkillsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/skills');
+                const response = await axios.get('http://localhost:5000/skills');
                 setSkills(response.data);
             } catch (error) {
                 console.error('Error fetching skills data:', error);

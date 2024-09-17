@@ -394,7 +394,7 @@ const Internal = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/interview?CreatedBy=${userId}&Interviewstype=/internalinterview`
+        `http://localhost:5000/interview?CreatedBy=${userId}&Interviewstype=/internalinterview`
       );
       console.log("interview data:", response.data);
       setCandidateData(response.data);
@@ -600,7 +600,7 @@ const Internal = () => {
   const handleClick = async () => {
     try {
       const response = await axios.put(
-        "http://localhost:3000/interview/reschedule",
+        "http://localhost:5000/interview/reschedule",
         {
           id: showEditLater._id,
         }
@@ -631,7 +631,7 @@ const Internal = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:3000/interview/${currentInterviewId}`,
+        `http://localhost:5000/interview/${currentInterviewId}`,
         {
           _id: currentInterviewId,
           Status: "ScheduleCancel",
@@ -639,7 +639,7 @@ const Internal = () => {
       );
 
       const notificationResponse = await axios.post(
-        "http://localhost:3000/notification",
+        "http://localhost:5000/notification",
         {
           Body: "Interview Cancelled successfully",
           Status: "ScheduleCancel",
@@ -699,7 +699,7 @@ const Internal = () => {
 
   const handleInterviewClick = async (interviewId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/interview/${interviewId}`);
+      const response = await axios.get(`http://localhost:5000/interview/${interviewId}`);
       setSelectedCandidate(response.data);
       setActionViewMore(false)
       setTriggerCancel(false);

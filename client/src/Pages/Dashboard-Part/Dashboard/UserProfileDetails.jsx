@@ -5,7 +5,6 @@ import { MdOutlineCancel } from "react-icons/md";
 import EditUser from "./EditUser";
 
 
-
 // {f} //
 
 const UserProfileDetails = () => {

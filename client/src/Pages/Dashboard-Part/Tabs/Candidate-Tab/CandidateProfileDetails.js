@@ -9,7 +9,6 @@ import genderlessImage from '../../../Dashboard-Part/Images/transgender.png';
 import axios from "axios";
 import { format } from 'date-fns';
 import EditCandidateForm from "./EditCandidate";
-import { TbFoldersOff } from "react-icons/tb";
 
 const CandidateDetails = ({ candidate, onCloseprofile }) => {
   useEffect(() => {
@@ -17,8 +16,6 @@ const CandidateDetails = ({ candidate, onCloseprofile }) => {
   }, []);
   const navigate = useNavigate();
   const location = useLocation();
-  // const candidateData = location.state?.candidate;
-  // const [candidate] = useState(candidateData);
   const [activeTab, setActiveTab] = useState("candidate");
   const handleNavigate = () => {
     navigate("/candidate", { state: { candidate } });
@@ -52,11 +49,6 @@ const CandidateDetails = ({ candidate, onCloseprofile }) => {
     setIsArrowUp(!isArrowUp);
   };
 
-  const [isArrowUp1, setIsArrowUp1] = useState(false);
-
-  const toggleArrow1 = () => {
-    setIsArrowUp1(!isArrowUp1);
-  };
   const currentRows = [
     {
       id: 1,
@@ -95,6 +87,7 @@ const CandidateDetails = ({ candidate, onCloseprofile }) => {
       Status: "Rejected",
     },
   ];
+
   const [isArrowUp2, setIsArrowUp2] = useState(true);
   const trFontstyle = {
     fontSize: "14px",
@@ -121,9 +114,6 @@ const CandidateDetails = ({ candidate, onCloseprofile }) => {
     setIsArrowUp4(updatedArrows);
   };
 
-  // const closeModalAndNavigate = () => {
-  //   navigate("/candidate");
-  // };
   const [showMainContent, setShowMainContent] = useState(true);
   const [showNewCandidateContent, setShowNewCandidateContent] = useState(false);
 
@@ -136,29 +126,15 @@ const CandidateDetails = ({ candidate, onCloseprofile }) => {
     setShowNewCandidateContent(false);
   };
 
-  const [skillsData, setSkillsData] = useState(null);
   const [positionData, setPositionData] = useState(null);
   const selectedPositionId = candidate.PositionId;
-
-  // useEffect(() => {
-  //   const fetchSkillsData = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:3000/position");
-  //       setSkillsData(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching position data:", error);
-  //     }
-  //   };
-
-  //   fetchSkillsData();
-  // }, []);
 
   useEffect(() => {
     if (selectedPositionId) {
       const fetchPositionData = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3000/position/${selectedPositionId}`
+            `http://localhost:5000/position/${selectedPositionId}`
           );
           setPositionData(response.data);
         } catch (error) {

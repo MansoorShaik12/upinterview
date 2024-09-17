@@ -136,7 +136,7 @@ const AddQuestion1 = React.forwardRef(({ isOpen, onClose, sectionName, onQuestio
     };
 
     try {
-      const response = await axios.put(`http://localhost:3000/updateNewQuestion/${_id}`, questionData);
+      const response = await axios.put(`http://localhost:5000/updateNewQuestion/${_id}`, questionData);
 console.log(response.data);
     } catch (error) {
       console.error("Error saving question:", error);

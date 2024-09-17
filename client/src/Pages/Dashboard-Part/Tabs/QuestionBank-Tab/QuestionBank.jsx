@@ -49,7 +49,7 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
     useEffect(() => {
         const fetchSkillsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/skills');
+                const response = await axios.get('http://localhost:5000/skills');
                 setTechOptions(response.data);
                 console.log(response.data);
             } catch (error) {
@@ -174,7 +174,7 @@ const QuestionBank = () => {
 
         const fetchSuggestedQuestionsCount = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/suggestedquestions-count');
+                const response = await axios.get('http://localhost:5000/suggestedquestions-count');
                 setSuggestedQuestionsCount(response.data);
             } catch (error) {
                 console.error('Error fetching suggested questions count:', error);
@@ -184,7 +184,7 @@ const QuestionBank = () => {
         const fetchFavoriteQuestionsCount = async () => {
             try {
                 const userId = localStorage.getItem("userId");
-                const response = await axios.get(`http://localhost:3000/favoritequestions-count/${userId}`);
+                const response = await axios.get(`http://localhost:5000/favoritequestions-count/${userId}`);
                 setFavoriteQuestionsCount(response.data);
             } catch (error) {
                 console.error('Error fetching favorite questions count:', error);
@@ -203,7 +203,7 @@ const QuestionBank = () => {
         const fetchSkillsData = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://localhost:3000/skills');
+                const response = await axios.get('http://localhost:5000/skills');
                 setCurrentRows(response.data);
             } catch (error) {
                 console.error('Error fetching SkillsData:', error);

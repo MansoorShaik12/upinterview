@@ -157,7 +157,7 @@ const Users = () => {
   useEffect(() => {
     const fetchlocationsData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/users');
+        const response = await axios.get('http://localhost:5000/users');
         setUserData(response.data);
       } catch (error) {
         console.error('Error fetching users data:', error);

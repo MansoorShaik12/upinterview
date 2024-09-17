@@ -16,7 +16,7 @@ const Profile = () => {
     const fetchContactData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/contacts/${userId}`
+          `http://localhost:5000/contacts/${userId}`
         );
         const data = response.data;
 
@@ -60,7 +60,7 @@ const Profile = () => {
     const fetchContactData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/contacts/${userId}`
+          `http://localhost:5000/contacts/${userId}`
         );
         const data = response.data;
 
@@ -114,7 +114,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchindustriesData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/industries");
+        const response = await axios.get("http://localhost:5000/industries");
         setIndustries(response.data);
       } catch (error) {
         console.error("Error fetching industries data:", error);
@@ -139,7 +139,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchlocationsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/locations");
+        const response = await axios.get("http://localhost:5000/locations");
         setLocations(response.data);
       } catch (error) {
         console.error("Error fetching locations data:", error);
@@ -208,7 +208,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchtechnologyData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/technology");
+        const response = await axios.get("http://localhost:5000/technology");
         setServices(response.data);
       } catch (error) {
         console.error("Error fetching roles data:", error);
@@ -245,7 +245,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchSkillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
       } catch (error) {
         console.error("Error fetching roles data:", error);
@@ -284,7 +284,7 @@ const Profile = () => {
     setEditMode(false);
     try {
       // Update contact data
-      await axios.put(`http://localhost:3000/contacts/${contactData._id}`, {
+      await axios.put(`http://localhost:5000/contacts/${contactData._id}`, {
         ...contactData,
         ...formData,
         Technology: interview.Technology.map((tech) => tech.TechnologyMasterName),
@@ -294,7 +294,7 @@ const Profile = () => {
       });
 
       // Update user data
-      await axios.put(`http://localhost:3000/updateuser`, { _id: contactData._id, ...formData });
+      await axios.put(`http://localhost:5000/updateuser`, { _id: contactData._id, ...formData });
     } catch (error) {
       console.error("Error updating data:", error);
     }
@@ -339,7 +339,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchsetcurrentrolesData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/roles");
+        const response = await axios.get("http://localhost:5000/roles");
         setCurrentRole(response.data);
       } catch (error) {
         console.error("Error fetching roles data:", error);

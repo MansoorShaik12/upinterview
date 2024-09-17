@@ -13,7 +13,7 @@
 //       <div>
 //         <div className="border-b p-4">
 //           <p className="font-bold text-xl">LOGO</p>
-//         </div>
+//         </div> 
 
 //         <div className="grid grid-cols-2">
 //           {/* col 1 */}

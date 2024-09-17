@@ -72,7 +72,7 @@ const InterviewNewQuestion = ({ isOpen, onClose, onOutsideClick, questionProfile
     console.log("Data being sent:", questionData);
 
     try {
-      const questionResponse = await axios.post('http://localhost:3000/newquestion', questionData);
+      const questionResponse = await axios.post('http://localhost:5000/newquestion', questionData);
       console.log('Question created:', questionResponse.data);
 
       setFormData({

@@ -237,7 +237,7 @@ const Home3 = () => {
     const fetchCandidateData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:3000/candidate?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/candidate?CreatedBy=${userId}`);
         if (Array.isArray(response.data)) {
           const sortedData = response.data.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -266,7 +266,7 @@ const Home3 = () => {
     const fetchSkillsData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:3000/position?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/position?CreatedBy=${userId}`);
         if (Array.isArray(response.data)) {
           const sortedData = response.data.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -292,7 +292,7 @@ const Home3 = () => {
     const fetchTeamsData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:3000/team?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/team?CreatedBy=${userId}`);
         if (Array.isArray(response.data)) {
           const sortedData = response.data.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -318,7 +318,7 @@ const Home3 = () => {
     const fetchInterviewData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:3000/interview");
+        const response = await axios.get("http://localhost:5000/interview");
         if (Array.isArray(response.data)) {
           const sortedData = response.data.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -510,7 +510,7 @@ const Home4 = () => {
   useEffect(() => {
     const fetchNotificationData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/notification");
+        const response = await axios.get("http://localhost:5000/notification");
         setNotificationsData(response.data);
       } catch (error) {
         console.error("Error fetching notificationData:", error);

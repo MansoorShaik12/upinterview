@@ -20,12 +20,12 @@ const AssessmentTest = () => {
       const assessmentId = params.get('assessmentId');
       if (assessmentId) {
         try {
-          const response = await axios.get(`http://localhost:3000/assessment-details/${assessmentId}`);
+          const response = await axios.get(`http://localhost:5000/assessment-details/${assessmentId}`);
           setAssessment(response.data);
           // Fetch sections and questions
-          const sectionsResponse = await axios.get(`http://localhost:3000/assessment/${assessmentId}/sections`);
+          const sectionsResponse = await axios.get(`http://localhost:5000/assessment/${assessmentId}/sections`);
           setSections(sectionsResponse.data);
-          const questionsResponse = await axios.get(`http://localhost:3000/assessment/${assessmentId}/questions`);
+          const questionsResponse = await axios.get(`http://localhost:5000/assessment/${assessmentId}/questions`);
           setQuestions(questionsResponse.data);
         } catch (error) {
           console.error("Error fetching assessment:", error);

@@ -34,11 +34,11 @@ const PositionProfileDetails = ({ position, onCloseprofile }) => {
     const fetchCandidateData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:3000/candidate');
+        const response = await axios.get('http://localhost:5000/candidate');
         if (Array.isArray(response.data)) {
           const candidatesWithImages = response.data.map((candidate) => {
             if (candidate.ImageData && candidate.ImageData.filename) {
-              const imageUrl = `http://localhost:3000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
+              const imageUrl = `http://localhost:5000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
               return { ...candidate, imageUrl };
             }
             return candidate;

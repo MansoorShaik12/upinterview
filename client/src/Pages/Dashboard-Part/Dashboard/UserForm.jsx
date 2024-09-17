@@ -122,7 +122,7 @@ const UserForm = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchsetcurrentrolesData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/roles");
+        const response = await axios.get("http://localhost:5000/roles");
         setCurrentRole(response.data);
       } catch (error) {
         console.error("Error fetching roles data:", error);

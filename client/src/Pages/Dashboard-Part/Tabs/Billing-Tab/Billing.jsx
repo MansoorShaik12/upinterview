@@ -35,7 +35,6 @@ const Billing = () => {
               <div className="grid grid-cols-3 my-3">
                 <div> Payment Status</div>
                 <div className="text-center">:</div>
-
                 <div>Paid</div>
               </div>
               <div>

@@ -119,11 +119,11 @@ const Schedulelater = ({ onClose }) => {
     const fetchCandidateData = async () => {
       try {
 
-        const response = await axios.get(`http://localhost:3000/candidate?createdBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/candidate?createdBy=${userId}`);
         if (Array.isArray(response.data)) {
           const candidatesWithImages = response.data.map((candidate) => {
             if (candidate.ImageData && candidate.ImageData.filename) {
-              const imageUrl = `http://localhost:3000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
+              const imageUrl = `http://localhost:5000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
               return { ...candidate, imageUrl };
             }
             return candidate;
@@ -155,7 +155,7 @@ const Schedulelater = ({ onClose }) => {
       const fetchPositionData = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3000/position/${selectedPositionId}`
+            `http://localhost:5000/position/${selectedPositionId}`
           );
           setRounds(response.data.rounds);
           setSelectedDuration(response.data.rounds.map(round => round.duration || ""));
@@ -176,7 +176,7 @@ const Schedulelater = ({ onClose }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/users/${sub}`);
+        const response = await axios.get(`http://localhost:5000/users/${sub}`);
         if (response.data) {
           setUserLastName(response.data.Name);
         }
@@ -230,7 +230,7 @@ const Schedulelater = ({ onClose }) => {
         CreatedBy: userId
       };
       console.log(interviewData);
-      await axios.post('http://localhost:3000/interview', interviewData);
+      await axios.post('http://localhost:5000/interview', interviewData);
       onClose();
     } catch (error) {
       console.error('Error saving interview data:', error);
@@ -264,11 +264,11 @@ const Schedulelater = ({ onClose }) => {
   useEffect(() => {
     const fetchTeamsData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/team?CreatedBy=${userId}`);
+        const response = await axios.get(`http://localhost:5000/team?CreatedBy=${userId}`);
         if (Array.isArray(response.data)) {
           const teamsWithImages = response.data.map((team) => {
             if (team.ImageData && team.ImageData.filename) {
-              const imageUrl = `http://localhost:3000/${team.ImageData.path.replace(/\\/g, '/')}`;
+              const imageUrl = `http://localhost:5000/${team.ImageData.path.replace(/\\/g, '/')}`;
               return { ...team, imageUrl };
             }
             return team;

@@ -83,11 +83,11 @@ const Navbar = () => {
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/contacts'); // Fetch all contacts
+        const response = await axios.get('http://localhost:5000/contacts'); // Fetch all contacts
         if (Array.isArray(response.data) && response.data.length > 0) {
           const contact = response.data[0]; // Assuming you want the first contact's image
           if (contact.ImageData && contact.ImageData.filename) {
-            const imageUrl = `http://localhost:3000/${contact.ImageData.path.replace(/\\/g, '/')}`;
+            const imageUrl = `http://localhost:5000/${contact.ImageData.path.replace(/\\/g, '/')}`;
             setProfileImage(imageUrl);
           }
         }
@@ -134,7 +134,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/contacts/${userId}`);
+        const response = await axios.get(`http://localhost:5000/contacts/${userId}`);
         const data = response.data;
 
         if (data.ImageData && data.ImageData.path) {

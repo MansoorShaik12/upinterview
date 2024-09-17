@@ -11,7 +11,6 @@ import { IoMdClock } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa";
 import axios from "axios";
 
-
 const Notifications = () => {
   useEffect(() => {
     document.title = "Notifications";
@@ -81,7 +80,7 @@ const Notifications2 = () => {
   useEffect(() => {
     const fetchNotificationData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/notification");
+        const response = await axios.get("http://localhost:5000/notification");
         setNotificationsData(response.data);
       } catch (error) {
         console.error("Error fetching notificationData:", error);

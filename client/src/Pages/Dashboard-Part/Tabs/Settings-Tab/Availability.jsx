@@ -25,7 +25,7 @@
 //     useEffect(() => {
 //         const fetchData = async () => {
 //             try {
-//                 const response = await axios.get(`http://localhost:3000/contacts/${userId}/details`);
+//                 const response = await axios.get(`http://localhost:5000/contacts/${userId}/details`);
 //                 if (response.data) {
 //                     const availabilityData = response.data.availability;
 //                     const timesByDay = availabilityData.reduce((acc, availability) => {
@@ -66,7 +66,7 @@
 //                 })),
 //             };
 
-//             await axios.put(`http://localhost:3000/contacts/${userId}/availability`, updatedAvailability);
+//             await axios.put(`http://localhost:5000/contacts/${userId}/availability`, updatedAvailability);
 
 //             // Show success toast message
 //             toast.success("Settings saved successfully!", {
@@ -304,7 +304,7 @@ const Availability = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/contacts/${userId}/details`);
+                const response = await axios.get(`http://localhost:5000/contacts/${userId}/details`);
                 if (response.data) {
                     const availabilityData = response.data.availability || [];
                     const timesByDay = availabilityData.reduce((acc, availability) => {
@@ -356,7 +356,7 @@ const Availability = () => {
             console.log('Updated availability data:', updatedAvailability);
 
             // Send the update request
-            await axios.put(`http://localhost:3000/contacts/${userId}/availability`, updatedAvailability);
+            await axios.put(`http://localhost:5000/contacts/${userId}/availability`, updatedAvailability);
 
             // Show success toast message
             toast.success("Settings saved successfully!", {

@@ -33,13 +33,13 @@ const InterviewDetails = ({ questionProfile, onCloseprofile }) => {
   useEffect(() => {
     const fetchSuggestedQuestions = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/suggestedquestions/${questionProfile.SkillName}`, {
+        const response = await axios.get(`http://localhost:5000/suggestedquestions/${questionProfile.SkillName}`, {
           params: { userId }
         });
         const questions = response.data;
         setSuggestedQuestions(questions);
 
-        const favoriteResponse = await axios.get(`http://localhost:3000/favoritequestions/${userId}`);
+        const favoriteResponse = await axios.get(`http://localhost:5000/favoritequestions/${userId}`);
         const favoriteQuestionIds = favoriteResponse.data.map(q => q._id);
         setFavoriteQuestions(favoriteQuestionIds);
 
@@ -51,7 +51,7 @@ const InterviewDetails = ({ questionProfile, onCloseprofile }) => {
 
     const fetchMyQuestions = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/newquestion/${questionProfile.SkillName}`, {
+        const response = await axios.get(`http://localhost:5000/newquestion/${questionProfile.SkillName}`, {
           params: { createdBy: userId }
         });
         const allQuestions = response.data;
@@ -77,7 +77,7 @@ const InterviewDetails = ({ questionProfile, onCloseprofile }) => {
   const handleStarClick = async (questionId) => {
     const isFavorite = favoriteQuestions.includes(questionId);
     try {
-      const response = await axios.put(`http://localhost:3000/suggestedquestions/${questionId}/favorite`, {
+      const response = await axios.put(`http://localhost:5000/suggestedquestions/${questionId}/favorite`, {
         favorite: !isFavorite,
         userId: userId // Include user ID in the request
       });
@@ -421,7 +421,7 @@ const InterviewDetails = ({ questionProfile, onCloseprofile }) => {
   const handleDeleteConfirm = async (confirm) => {
     if (confirm && questionToDelete) {
       try {
-        const response = await axios.delete(`http://localhost:3000/newquestion/${questionToDelete}`);
+        const response = await axios.delete(`http://localhost:5000/newquestion/${questionToDelete}`);
         console.log("Question deleted:", response.data);
         // Update state to remove the deleted question from the list
         setMyQuestions((prevQuestions) => prevQuestions.filter(q => q._id !== questionToDelete));

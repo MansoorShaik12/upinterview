@@ -91,7 +91,7 @@ const Internalprofiledetails = ({ candidate, onCloseprofile, triggerCancel, view
             });
 
             const updatedCandidateData = { ...updatedCandidate, rounds: updatedRounds };
-            await axios.put(`http://localhost:3000/updateinterview/${currentInterviewId}`, updatedCandidateData);
+            await axios.put(`http://localhost:5000/updateinterview/${currentInterviewId}`, updatedCandidateData);
             setShowPopup(false);
             setCurrentRoundIndex(null);
         } catch (error) {

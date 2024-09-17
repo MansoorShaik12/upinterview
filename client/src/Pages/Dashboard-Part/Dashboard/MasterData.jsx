@@ -30,7 +30,7 @@ const MasterData = () => {
   useEffect(() => {
     const fetchSkillsData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/skills');
+        const response = await axios.get('http://localhost:5000/skills');
         console.log(response.data);
         setSkillData(response.data);
       } catch (error) {
@@ -44,7 +44,7 @@ const MasterData = () => {
   useEffect(() => {
     const fetchtechnologyData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/technology');
+        const response = await axios.get('http://localhost:5000/technology');
         setTechnologyData(response.data);
       } catch (error) {
         console.error('Error fetching roles data:', error);
@@ -57,7 +57,7 @@ const MasterData = () => {
   useEffect(() => {
     const fetchindustriesData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/industries');
+        const response = await axios.get('http://localhost:5000/industries');
         setIndustries(response.data);
       } catch (error) {
         console.error('Error fetching industries data:', error);
@@ -71,7 +71,7 @@ const MasterData = () => {
   useEffect(() => {
     const fetchsetcurrentrolesData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/roles');
+        const response = await axios.get('http://localhost:5000/roles');
         setCurrentRole(response.data);
       } catch (error) {
         console.error('Error fetching roles data:', error);
@@ -85,7 +85,7 @@ const MasterData = () => {
   useEffect(() => {
     const fetchlocationsData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/locations');
+        const response = await axios.get('http://localhost:5000/locations');
         setLocations(response.data);
       } catch (error) {
         console.error('Error fetching locations data:', error);

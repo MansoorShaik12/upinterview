@@ -161,7 +161,7 @@ const Outsource = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/interview?CreatedBy=${userId}&Interviewstype=/outsourceinterview`
+        `http://localhost:5000/interview?CreatedBy=${userId}&Interviewstype=/outsourceinterview`
       );
       console.log("interview data:", response.data);
       setCandidateData(response.data);
@@ -364,7 +364,7 @@ const Outsource = () => {
   const handleClick = async () => {
     try {
       const response = await axios.put(
-        "http://localhost:3000/interview/reschedule",
+        "http://localhost:5000/interview/reschedule",
         {
           id: selectedInterview._id,
         }
@@ -392,7 +392,7 @@ const Outsource = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:3000/interview/${currentInterviewId}`,
+        `http://localhost:5000/interview/${currentInterviewId}`,
         {
           _id: currentInterviewId,
           Status: "ScheduleCancel",
@@ -400,7 +400,7 @@ const Outsource = () => {
       );
 
       const notificationResponse = await axios.post(
-        "http://localhost:3000/notification",
+        "http://localhost:5000/notification",
         {
           Body: "Interview Cancelled successfully",
           Status: "ScheduleCancel",

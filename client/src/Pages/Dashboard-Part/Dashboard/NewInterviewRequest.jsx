@@ -9,7 +9,6 @@ const NewInterviewRequest = forwardRef(({ isOpen, onClose, onOutsideClick }, ref
   const [searchQuery, setSearchQuery] = useState("");
   const [skillsData, setSkillsData] = useState(() => {
     const storedSkillsData = localStorage.getItem("skillsData");
-
     return storedSkillsData ? JSON.parse(storedSkillsData) : [];
   });
 

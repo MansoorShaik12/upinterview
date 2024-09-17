@@ -16,7 +16,6 @@ const AssessmentQuestion = () => {
   const [showSectionContent] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
   useEffect(() => {

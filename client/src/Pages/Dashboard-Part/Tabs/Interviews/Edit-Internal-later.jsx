@@ -35,11 +35,11 @@ const Schedulelater = ({ onClose, candidate1, interviewers }) => {
     useEffect(() => {
         const fetchCandidateData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/candidate?createdBy=${userId}`);
+                const response = await axios.get(`http://localhost:5000/candidate?createdBy=${userId}`);
                 if (Array.isArray(response.data)) {
                     const candidatesWithImages = response.data.map((candidate) => {
                         if (candidate.ImageData && candidate.ImageData.filename) {
-                            const imageUrl = `http://localhost:3000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
+                            const imageUrl = `http://localhost:5000/${candidate.ImageData.path.replace(/\\/g, '/')}`;
                             return { ...candidate, imageUrl };
                         }
                         return candidate;
@@ -169,7 +169,7 @@ const Schedulelater = ({ onClose, candidate1, interviewers }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/users/${sub}`);
+                const response = await axios.get(`http://localhost:5000/users/${sub}`);
                 if (response.data) {
                     setUserLastName(response.data.Name);
                 }
@@ -186,7 +186,7 @@ const Schedulelater = ({ onClose, candidate1, interviewers }) => {
             const fetchPositionData = async () => {
                 try {
                     const response = await axios.get(
-                        `http://localhost:3000/position/${selectedPositionId}`
+                        `http://localhost:5000/position/${selectedPositionId}`
                     );
                     // setPositionData(response.data);
                     setRounds(response.data.rounds);
@@ -254,7 +254,7 @@ const Schedulelater = ({ onClose, candidate1, interviewers }) => {
                 CreatedBy: userId
             };
             console.log(interviewData);
-            await axios.put('http://localhost:3000/updateinterview', interviewData);
+            await axios.put('http://localhost:5000/updateinterview', interviewData);
             
             // Broadcast the updated interview data
             const ws = new WebSocket("ws://localhost:8080");
@@ -390,11 +390,11 @@ const Schedulelater = ({ onClose, candidate1, interviewers }) => {
     useEffect(() => {
         const fetchTeamsData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/team?CreatedBy=${userId}`);
+                const response = await axios.get(`http://localhost:5000/team?CreatedBy=${userId}`);
                 if (Array.isArray(response.data)) {
                     const teamsWithImages = response.data.map((team) => {
                         if (team.ImageData && team.ImageData.filename) {
-                            const imageUrl = `http://localhost:3000/${team.ImageData.path.replace(/\\/g, '/')}`;
+                            const imageUrl = `http://localhost:5000/${team.ImageData.path.replace(/\\/g, '/')}`;
                             return { ...team, imageUrl };
                         }
                         return team;
@@ -436,7 +436,7 @@ const Schedulelater = ({ onClose, candidate1, interviewers }) => {
     useEffect(() => {
         const fetchInterviewData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/interview/${candidate1._id}`);
+                const response = await axios.get(`http://localhost:5000/interview/${candidate1._id}`);
                 setInterviewData(response.data);
                 setRounds(response.data.rounds); // Set rounds from fetched data
             } catch (error) {

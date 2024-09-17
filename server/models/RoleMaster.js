@@ -25,7 +25,7 @@ const RoleMasterSchema = new Schema({
 }, { collection: 'RoleMaster' });
 
 // Pre-save hook to update ModifiedDate before saving
-RoleMasterSchema.pre('save', function(next) {
+RoleMasterSchema.pre('save', function (next) {
     // Only set CreatedDate if it is a new document
     if (this.isNew) {
         this.CreatedDate = Date.now();

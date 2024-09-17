@@ -52,12 +52,12 @@ const MockProfileDetails = () => {
     const handlePopupConfirm = async (e,_id) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:3000/mockinterview/${currentInterviewId}`, {
+            const response = await axios.put(`http://localhost:5000/mockinterview/${currentInterviewId}`, {
                 _id: currentInterviewId,
                 Status: "ScheduleCancel",
               });
 
-              const notificationResponse = await axios.post('http://localhost:3000/notification', {
+              const notificationResponse = await axios.post('http://localhost:5000/notification', {
                 Body: 'Interview Cancelled successfully',
                 Status: "ScheduleCancel",
               });

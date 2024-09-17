@@ -71,7 +71,7 @@ const PopUp = ({ onClose }) => {
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/skills");
+        const response = await axios.get("http://localhost:5000/skills");
         setSkills(response.data);
       } catch (error) {
         console.error("Error fetching SkillsData:", error);

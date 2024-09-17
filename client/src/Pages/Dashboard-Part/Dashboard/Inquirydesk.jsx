@@ -345,7 +345,7 @@ const Inquirydesk = () => {
     const fetchCandidateData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:3000/candidate');
+        const response = await axios.get('http://localhost:5000/candidate');
         if (Array.isArray(response.data)) {
           setCandidateData(response.data);
         } else {
@@ -372,7 +372,7 @@ const Inquirydesk = () => {
   useEffect(() => {
     const fetchCandidateData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/candidate");
+        const response = await axios.get("http://localhost:5000/candidate");
         if (Array.isArray(response.data)) {
           setCandidateData(response.data);
         } else {

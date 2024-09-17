@@ -127,7 +127,7 @@ const AddQuestion1 = React.forwardRef(({ isOpen, onClose, sectionName, onQuestio
     console.log("Sending questionData:", questionData);
 
     try {
-      const response = await axios.post("http://localhost:3000/newquestion", questionData);
+      const response = await axios.post("http://localhost:5000/newquestion", questionData);
       console.log("Question saved:", response.data);
     } catch (error) {
       console.error("Error saving question:", error);

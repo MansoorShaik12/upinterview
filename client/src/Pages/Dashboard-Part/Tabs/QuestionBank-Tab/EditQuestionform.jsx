@@ -71,7 +71,7 @@ const Interviewcq = ({ onClose, question }) => {
     };
 
     try {
-      const questionResponse = await axios.put(`http://localhost:3000/newquestion/${_id}`, questionData);
+      const questionResponse = await axios.put(`http://localhost:5000/newquestion/${_id}`, questionData);
       console.log(questionResponse);
       setFormData({
         Question: "",
@@ -118,7 +118,7 @@ const Interviewcq = ({ onClose, question }) => {
   useEffect(() => {
     const fetchskillsData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/skills');
+        const response = await axios.get('http://localhost:5000/skills');
         setSkills(response.data);
       } catch (error) {
         console.error('Error fetching SkillsData:', error);

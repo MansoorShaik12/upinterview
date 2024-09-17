@@ -83,7 +83,7 @@ const App = () => {
   //   const checkUserExistence = async () => {
   //     if (isAuthenticated && user) {
   //       try {
-  //         const response = await axios.get(`http://localhost:3000/users/${user.sub}`);
+  //         const response = await axios.get(`http://localhost:5000/users/${user.sub}`);
   //         if (response.data) {
   //           navigate('/home');
   //         } else {

@@ -19,7 +19,7 @@ const Schedulelater = ({ isOpen, onClose, onOutsideClick, lastName, setSidebarOp
     useEffect(() => {
         const fetchSkillsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/position');
+                const response = await axios.get('http://localhost:5000/position');
                 console.log('Position data:', response.data);
                 setSkillsData(response.data);
             } catch (error) {
@@ -34,7 +34,7 @@ const Schedulelater = ({ isOpen, onClose, onOutsideClick, lastName, setSidebarOp
     useEffect(() => {
         const fetchTeamsData = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/team');
+                const response = await axios.get('http://localhost:5000/team');
                 console.log('Teams data:', response.data);
                 setTeamData(response.data);
             } catch (error) {
@@ -96,7 +96,7 @@ const Schedulelater = ({ isOpen, onClose, onOutsideClick, lastName, setSidebarOp
 
             console.log('FormData:', formData);
 
-            const interviewResponse = await axios.post('http://localhost:3000/interview', {
+            const interviewResponse = await axios.post('http://localhost:5000/interview', {
                 ...formData,
                 InterviewType: selectedtype,
                 Position: selectedPosition,
@@ -113,7 +113,7 @@ const Schedulelater = ({ isOpen, onClose, onOutsideClick, lastName, setSidebarOp
 
             const Body = `Interview successfully scheduled for Technical Round (${InterviewTitle})on ${DateTime} via ${selectedtype}, scheduled for ${Duration}.`;
 
-            const notificationResponse = await axios.post('http://localhost:3000/notification', {
+            const notificationResponse = await axios.post('http://localhost:5000/notification', {
                 Title: InterviewTitle,
                 Body: Body,
                 InterviewType: selectedtype,

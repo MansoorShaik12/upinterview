@@ -113,7 +113,7 @@ export default function NoFreelancer() {
 
         if (name === "UserId") {
             try {
-                const response = await axios.get(`http://localhost:3000/check-userid/${value}`);
+                const response = await axios.get(`http://localhost:5000/check-userid/${value}`);
                 if (response.data.exists) {
                     setUserIdError('That User ID is already taken. Please choose another.');
                 } else {
@@ -127,7 +127,7 @@ export default function NoFreelancer() {
         // Check for Email availability
         if (name === "Email") {
             try {
-                const response = await axios.get(`http://localhost:3000/check-email/${value}`);
+                const response = await axios.get(`http://localhost:5000/check-email/${value}`);
                 if (response.data.exists) {
                     setEmailError('That email is already in use. Please choose another.');
                 } else {
@@ -315,12 +315,12 @@ export default function NoFreelancer() {
         console.log('Submitting form with data:', contactData); // Log the data being sent
 
         try {
-            const userResponse = await axios.post('http://localhost:3000/users', userData);
+            const userResponse = await axios.post('http://localhost:5000/users', userData);
             console.log('User saved successfully:', userResponse.data);
 
 
             contactData.user = userResponse.data._id;
-            const contactResponse = await axios.post('http://localhost:3000/contacts', contactData);
+            const contactResponse = await axios.post('http://localhost:5000/contacts', contactData);
             console.log('Contact saved successfully:', contactResponse.data);
 
             if (file || user.picture) {
@@ -334,7 +334,7 @@ export default function NoFreelancer() {
                 imageData.append("id", userResponse.data._id);
 
                 try {
-                    await axios.post("http://localhost:3000/upload", imageData, {
+                    await axios.post("http://localhost:5000/upload", imageData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -349,7 +349,7 @@ export default function NoFreelancer() {
                 imageData.set("id", contactResponse.data._id);
 
                 try {
-                    await axios.post("http://localhost:3000/upload", imageData, {
+                    await axios.post("http://localhost:5000/upload", imageData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -393,7 +393,7 @@ export default function NoFreelancer() {
     useEffect(() => {
         const fetchRoles = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/roles');
+                const response = await axios.get('http://localhost:5000/roles');
                 setCurrentRoles(response.data);
             } catch (error) {
                 console.error('Error fetching roles:', error);
@@ -441,7 +441,7 @@ export default function NoFreelancer() {
     useEffect(() => {
         const fetchIndustries = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/industries');
+                const response = await axios.get('http://localhost:5000/industries');
                 setFilteredIndustries(response.data);
             } catch (error) {
                 console.error('Error fetching industries:', error);
@@ -484,7 +484,7 @@ export default function NoFreelancer() {
     useEffect(() => {
         const fetchLocations = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/locations');
+                const response = await axios.get('http://localhost:5000/locations');
                 setFilteredLocations(response.data);
             } catch (error) {
                 console.error('Error fetching locations:', error);
