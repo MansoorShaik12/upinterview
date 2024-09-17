@@ -1,95 +1,95 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { IoIosPersonAdd } from "react-icons/io";
+import { GoOrganization } from "react-icons/go";
 import { useNavigate } from 'react-router-dom';
-import image1 from '../Dashboard-Part/Images/image1.png'
-import { FaTimes } from 'react-icons/fa';
+import image1 from '../Dashboard-Part/Images/image1.png';
+import { useAuth0 } from "@auth0/auth0-react";
 
-const Profile3 = () => {
-  const [selectedTab, setSelectedTab] = useState('');
+const Profile1 = () => {
+  const [showCreateProfile, setShowCreateProfile] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(false);
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState(false);
 
   // Handler to toggle the active state
-  const toggleActiveState = (tab) => {
+  const toggleActiveState = () => {
     setIsActive(!isActive);
-    setSelectedTab(tab);
+    setSelectedTab(true);
+    setShowCreateProfile(!showCreateProfile);
   };
 
-  const [showPopup, setShowPopup] = useState(false);
-
-  const handleButtonClick = () => {
+  const navigateToNext = () => {
     if (selectedTab) {
-      setShowPopup(true);
+      navigate('/profile3');
     }
   };
 
-  const handlePopupClose = () => {
-    setShowPopup(false);
-  };
+  // linkedin auth0 start
+  const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
 
-  const handlePopupConfirm = (isFreelancer) => {
-    setShowPopup(false);
-    navigateToNext(isFreelancer);
-  };
-
-  const navigateToNext = (isFreelancer) => {
-    if (isFreelancer) {
-      navigate('/profile4', { state: { isFreelancer } });
-    } else {
-      navigate('/nofreelance');
-    }
-  };
+  console.log('user details are :-', user);
+  // linkedin auth0 end
 
   return (
     <div>
       <div className='border-b p-4'>
         <p className='font-bold text-xl'>LOGO</p>
       </div>
+
       <div className='grid grid-cols-2'>
-        <div>
-          <div className='flex justify-center'>
-            <img src={image1} alt="" srcset="" />
-          </div>
+        {/* col 1 */}
+        <div className='flex justify-center'>
+          <img src={image1} alt="" />
         </div>
+        {/* col 2 */}
         <div>
-          <div className='flex flex-col items-center justify-center mt-24'>
-            {/* Let us Know your profession? */}
-            <div className='shadow border-b rounded-md px-11 p-4'>
-              <p className='text-md font-normal mb-5'>Let us Know your profession?</p>
-              <div className='justify-center items-center mb-8'>
-                <div onClick={() => toggleActiveState('technical')}>
-                  <button
-                    type="button"
-                    className={`flex text-md w-80 items-center justify-center border rounded-2xl px-11 p-2  transition-colors duration-300 mb-2 ${selectedTab === 'technical' ? 'bg-[#f5f5f5]' : 'bg-white'
-                      }`}
-                  >
-                    Technical Expert/Developer
-                  </button>
-                </div>
-                <div onClick={() => toggleActiveState('hr')}>
-                  <button
-                    type="button"
-                    className={`flex text-md w-80 items-center justify-center border rounded-2xl px-11 p-2 transition-colors duration-300 mb-2 ${selectedTab === 'hr' ? 'bg-[#f5f5f5]' : 'bg-white'
-                      }`}
-                  >
-                    HR/Recruiter
-                  </button>
-                </div>
-              </div>
+          <div className='flex flex-col items-center -mt-10 justify-center min-h-screen'>
+            <p className='mb-5 text-gray-500'>Pick your path to continue</p>
+            {/* Individual */}
+            <div className='flex justify-center'>
+              <button
+                type="button"
+                className={`flex text-lg w-80 items-center justify-center border rounded-2xl px-11 p-2 font-medium transition-colors duration-300 mb-2 ${isActive ? 'bg-[#f5f5f5]' : 'bg-white'}`}
+                onClick={toggleActiveState}
+              >
+                <p className='mr-5 text-3xl'>
+                  <IoIosPersonAdd />
+                </p>
+                <p>Individual</p>
+              </button>
             </div>
+            <p className='flex justify-center mb-8 font-normal text-xs text-gray-500'>
+              Enhance your interviewing journey as an individual interviewer
+            </p>
+            {/* Organization */}
+            <div className='flex justify-center'>
+              <button
+                type="button"
+                className="flex justify-center text-lg w-80 items-center bg-white border rounded-2xl px-11 p-2 font-medium transition-colors duration-300 mb-2 focus:bg-f5f5f5"
+              >
+                <p className='mr-5 text-3xl'>
+                  <GoOrganization />
+                </p>
+                <p>Organization</p>
+              </button>
+            </div>
+
+            <p className='flex justify-center mb-8 font-normal text-xs text-gray-500'>
+              Streamline your Organization interviewing process effortlessly
+            </p>
             {/* Create Profile */}
-            <div>
-              <div className="flex justify-center mt-5">
-                <button
-                  type="button"
-                  onClick={handleButtonClick}
-                  className={`text-sm text-white w-56 items-center border rounded-full p-3 ${selectedTab ? 'bg-sky-400 hover:text-gray-500' : 'bg-gray-400 cursor-not-allowed'}`}
-                  disabled={!selectedTab}
+            {showCreateProfile && (
+              <div className="flex justify-center">
+                <p
+                  // href={linkedinOAuthURL}
+                  onClick={() => loginWithRedirect()}
+                  // onClick={() => loginWithRedirect({ redirect_uri: `${window.location.origin}/callback` })}
+                  className="text-sm text-white w-auto items-center border bg-sky-400 rounded-full p-3 focus:text-black hover:text-gray-500"
                 >
-                  Create Profile
-                </button>
+                  Sign Up with LinkedIn
+                </p>
               </div>
-              {showPopup && <Popup onClose={handlePopupClose} onConfirm={handlePopupConfirm} />}
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -97,21 +97,4 @@ const Profile3 = () => {
   );
 }
 
-const Popup = ({ onClose, onConfirm }) => {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-15">
-      <div className="relative bg-white p-5 rounded-lg border shadow-lg h-48 text-center" style={{ width: "45%" }}>
-        <div onClick={onClose} className="absolute top-2 right-2 cursor-pointer">
-          <FaTimes className="text-gray-500" size={20} />
-        </div>
-        <p className='mt-6 text-lg'>Do you want to be an outsource interviewer (freelancer)?</p>
-        <div className="mt-10 flex justify-between">
-          <button onClick={() => onConfirm(true)} className="px-14 py-1 border bg-gray-300 rounded-md ml-10">Yes</button>
-          <button onClick={() => onConfirm(false)} className="px-14 py-1 border bg-gray-300 rounded-md mr-10">No</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Profile3;
+export default Profile1;
