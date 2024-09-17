@@ -30,6 +30,7 @@
     "passport-linkedin-oauth2": "^2.0.0",
     "simple-peer": "^9.11.1",
     "socket.io": "^4.7.5",
-    "ws": "^8.17.0"
+    "ws": "^8.17.0",
+    "concurrently": "^9.0.1"
   }
 }
