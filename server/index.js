@@ -1,6 +1,26 @@
 // index.js
 const express = require('express');
 const connectDB = require('./db.js');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const WebSocket = require('ws');
+
+const app = express();
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(cors({
+  origin: 'http://localhost:3002'
+}));
+
+connectDB();
+
+const wss = new WebSocket.Server({ port: 8080 });
+
+const SECRET_KEY = 'vpaas-magic-cookie-019af5b8e9c74f42a44947ee0c08572d';
+const TOKEN_EXPIRATION = '1h';
+
 const Candidate = require('./models/candidate.js');
 const Position = require('./models/position.js');
 const Team = require('./models/team.js');
@@ -17,7 +37,6 @@ const { NewQuestion, QuestionOption } = require('./models/NewQuestion.js');
 const Notifications = require('./models/notification.js');
 const { MockInterview, MockInterviewHistory } = require('./models/mockinterview.js');
 const TeamAvailability = require('./models/teamsavailability.js');
-const bodyParser = require('body-parser');
 const LoginBasicDetails1 = require('./models/LoginBasicDetails1.js');
 const LoginAdditionalDetails = require('./models/LoginAdditionalDetails.js');
 const LoginBasicDetails2 = require('./models/LoginBasicDetails2.js');
@@ -31,26 +50,11 @@ const { SuggestedQuestion } = require('./models/SuggestedQuestion.js');
 const TechnologyMaster = require('./models/TechnologyMaster.js');
 const RoleMaster = require('./models/RoleMaster.js');
 const LocationMaster = require('./models/LocationMaster.js');
-const path = require('path');
 const fs = require('fs');
 
-const jwt = require('jsonwebtoken');
 const { exec } = require('child_process');
-const cors = require('cors');
 
-const app = express();
-app.use(express.json());
-app.use(bodyParser.json());
-// app.use(cors());
-app.use(cors({
-  origin: 'http://localhost:3002'
-}));
-connectDB();
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 8080 });
 
-const SECRET_KEY = 'vpaas-magic-cookie-019af5b8e9c74f42a44947ee0c08572d';
-const TOKEN_EXPIRATION = '1h';
 app.get('/generate-token', (req, res) => {
   const payload = {
     // Add your payload data here
@@ -59,9 +63,17 @@ app.get('/generate-token', (req, res) => {
   res.json({ token });
 });
 
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../client/build')));
+
 // Add this route to handle the root URL
 app.get('/', (req, res) => {
-  res.send('Welcome to the Interview App API');
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
+// Handle any other requests and serve the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 wss.on('connection', (ws) => {
