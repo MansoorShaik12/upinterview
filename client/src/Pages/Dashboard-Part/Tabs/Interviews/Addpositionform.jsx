@@ -4,6 +4,7 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 
 const PopUp = ({ onClose }) => {
+
   const [formData, setFormData] = useState({
     title: "",
     companyname: "",
@@ -60,13 +61,6 @@ const PopUp = ({ onClose }) => {
     };
   }, []);
 
-  // skills table
-  const [rows, setRows] = useState([
-    { skill: "", experience: "", expertise: "" },
-    { skill: "", experience: "", expertise: "" },
-    { skill: "", experience: "", expertise: "" },
-  ]);
-
   const [skills, setSkills] = useState([]);
   useEffect(() => {
     const fetchskillsData = async () => {
@@ -80,60 +74,8 @@ const PopUp = ({ onClose }) => {
     fetchskillsData();
   }, []);
 
-  const [currentRow] = useState(0);
-  const [fieldsRequired, setFieldsRequired] = useState(true);
-  const updateRows = (newRows) => {
-    setRows(newRows);
-    localStorage.setItem("rows", JSON.stringify(newRows));
-  };
-  const handleSelectChange = (event, columnName) => {
-    const { textContent } = event.target.options[event.target.selectedIndex];
-
-    const emptyRowIndex = rows.findIndex(
-      (row) => row.skill === "" || row.experience === "" || row.expertise === ""
-    );
-    if (emptyRowIndex === -1) {
-      alert(" Please create a new row to add more data.");
-      return;
-    }
-
-    if (rows.length > 1) {
-      setFieldsRequired(false);
-    } else {
-      setFieldsRequired(true);
-    }
-
-    const updatedRows = [...rows];
-    updatedRows[currentRow][columnName] = textContent;
-
-    setRows(updatedRows);
-    event.target.value = "";
-
-    const updatedFormData = { ...formData };
-    if (!updatedFormData.skills) {
-      updatedFormData.skills = [];
-    }
-    if (!updatedFormData.skills[currentRow]) {
-      updatedFormData.skills[currentRow] = {};
-    }
-    updatedFormData.skills[currentRow][columnName] = textContent;
-    setFormData(updatedFormData);
-    updateRows(updatedRows);
-  };
-
-  const addRow = () => {
-    setRows((prevRows) => [
-      ...prevRows,
-      { skill: "", experience: "", expertise: "" },
-    ]);
-  };
-
   const [additionalNotesValue, setAdditionalNotesValue] = useState("");
 
-  const handleChangedescription = (event) => {
-    event.target.style.height = "auto";
-    event.target.style.height = event.target.scrollHeight + "px";
-  };
   const handleAdditionalNotesChange = (event) => {
     setAdditionalNotesValue(event.target.value);
     event.target.style.height = "auto";
@@ -203,7 +145,6 @@ const PopUp = ({ onClose }) => {
   const [allSelectedSkills, setAllSelectedSkills] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
 
-  const skillOptions = ["JavaScript", "React", "Node.js", "CSS", "HTML"];
   const experienceOptions = [
     "0-1 Years",
     "1-2 years",
@@ -246,7 +187,6 @@ const PopUp = ({ onClose }) => {
       ]);
       setAllSelectedSkills([...allSelectedSkills, selectedSkill]);
     }
-
     resetForm();
   };
 
@@ -287,22 +227,7 @@ const PopUp = ({ onClose }) => {
   };
 
   const [jobdescriptionValue, setJobDescriptionValue] = useState("");
-  const [description, setdescription] = useState("");
   const [errors, setErrors] = useState("");
-
-
-  // const handleChangedescription = (event) => {
-  //   const value = event.target.value;
-  //   if (value.length <= 1000) {
-  //     setdescription(value);
-  //     event.target.style.height = "auto";
-  //     event.target.style.height = event.target.scrollHeight + "px";
-  //     setFormData({ ...formData, jobdescription: value });
-
-  //     // Clear the error message for 'additionalnotes'
-  //     setErrors({ ...errors, jobdescription: "" });
-  //   }
-  // };
 
   const handleJobDescriptionChange = (event) => {
     const value = event.target.value;
@@ -312,7 +237,6 @@ const PopUp = ({ onClose }) => {
       event.target.style.height = event.target.scrollHeight + "px";
       setFormData({ ...formData, jobdescription: value });
 
-      // Clear the error message for 'additionalnotes'
       setErrors({ ...errors, jobdescription: "" });
     }
   };

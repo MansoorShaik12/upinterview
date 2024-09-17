@@ -1,8 +1,6 @@
-// (a
 import { useState, useRef, useEffect, useCallback } from "react";
 import "../../../../index.css";
 import "../styles/tabs.scss";
-import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaList } from "react-icons/fa6";
@@ -33,10 +31,7 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
   const [selectedStatusOptions, setSelectedStatusOptions] = useState([]);
   const [selectedTechOptions, setSelectedTechOptions] = useState([]);
   const [selectedExperienceOptions, setSelectedExperienceOptions] = useState([]);
-
-
   const isAnyOptionSelected = selectedStatusOptions.length > 0 || selectedTechOptions.length > 0 || selectedExperienceOptions.length > 0;
-
 
   const handleUnselectAll = () => {
     setSelectedStatusOptions([]);
@@ -48,13 +43,13 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
     setMinExperience('');
     setMaxExperience('');
     onFilterChange({ status: [], tech: [], experience: [] });
-};
+  };
+
   useEffect(() => {
     if (!isStatusMainChecked) setSelectedStatusOptions([]);
     if (!isTechMainChecked) setSelectedTechOptions([]);
     if (!isExperienceMainChecked) setSelectedExperienceOptions([]);
   }, [isStatusMainChecked, isTechMainChecked, isExperienceMainChecked]);
-
 
   const handleStatusMainToggle = () => {
     setStatusMainChecked(!isStatusMainChecked);
@@ -68,13 +63,6 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
     const newSelectedTech = isTechMainChecked ? [] : [...techOptions];
     setSelectedTechOptions(newSelectedTech);
     onFilterChange({ status: selectedStatusOptions, tech: newSelectedTech, experience: selectedExperienceOptions });
-  };
-
-  const handleExperienceMainToggle = () => {
-    setIsExperienceMainChecked(!isExperienceMainChecked);
-    const newSelectedExperience = isExperienceMainChecked ? [] : [...experienceOptions];
-    setSelectedExperienceOptions(newSelectedExperience);
-    onFilterChange({ status: selectedStatusOptions, tech: selectedTechOptions, experience: newSelectedExperience });
   };
 
   const handleStatusOptionToggle = (option) => {
@@ -97,17 +85,6 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
     onFilterChange({ status: selectedStatusOptions, tech: updatedOptions, experience: selectedExperienceOptions });
   };
 
-  const handleExperienceOptionToggle = (option) => {
-    const selectedIndex = selectedExperienceOptions.indexOf(option);
-    const updatedOptions = selectedIndex === -1
-      ? [...selectedExperienceOptions, option]
-      : selectedExperienceOptions.filter((_, index) => index !== selectedIndex);
-
-    setSelectedExperienceOptions(updatedOptions);
-    onFilterChange({ status: selectedStatusOptions, tech: selectedTechOptions, experience: updatedOptions });
-  };
-
-
   const statusOptions = [
     "Bachelor of Arts (BA)",
     "Bachelor of Science (BSc)",
@@ -127,20 +104,6 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
     "Diploma in Engineering",
     "Diploma in Computer Applications (DCA)",
     "Diploma in Business Administration",
-  ];
-
-  const experienceOptions = [
-    "0-1 years",
-    "1-2 years",
-    "2-3 years",
-    "3-4 years",
-    "4-5 years",
-    "5-6 years",
-    "6-7 years",
-    "7-8 years",
-    "8-9 years",
-    "9-10 years",
-    "10+ years",
   ];
 
   const techOptions = [
@@ -170,26 +133,23 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
     "Biometric Authentication Technology",
   ];
 
-
-  const [isExperienceDropdownOpen, setExperienceDropdownOpen] = useState(false);
-
-
   const [minExperience, setMinExperience] = useState('');
   const [maxExperience, setMaxExperience] = useState('');
 
   const handleExperienceChange = (e, type) => {
     const value = Math.max(0, Math.min(15, e.target.value));
     if (type === 'min') {
-        setMinExperience(value);
+      setMinExperience(value);
     } else {
-        setMaxExperience(value);
+      setMaxExperience(value);
     }
     onFilterChange({
-        status: selectedStatusOptions,
-        tech: selectedTechOptions,
-        experience: { min: type === 'min' ? value : minExperience, max: type === 'max' ? value : maxExperience },
+      status: selectedStatusOptions,
+      tech: selectedTechOptions,
+      experience: { min: type === 'min' ? value : minExperience, max: type === 'max' ? value : maxExperience },
     });
-};
+  };
+
   useEffect(() => {
     onFilterChange({
       status: selectedStatusOptions,
@@ -197,7 +157,6 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
       experience: { min: minExperience, max: maxExperience },
     });
   }, [selectedStatusOptions, selectedTechOptions, minExperience, maxExperience, onFilterChange]);
-
 
   return (
     <div
@@ -213,16 +172,15 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
           <div>
             <h2 className="text-lg font-bold ">Filter</h2>
           </div>
-          {/* Unselect All Option */}
           <div>
-    {(isAnyOptionSelected || minExperience || maxExperience) && (
-        <div>
-            <button onClick={handleUnselectAll} className="font-bold text-md">
-                Unselect All
-            </button>
-        </div>
-    )}
-</div>
+            {(isAnyOptionSelected || minExperience || maxExperience) && (
+              <div>
+                <button onClick={handleUnselectAll} className="font-bold text-md">
+                  Unselect All
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Higher Qualification */}
@@ -265,8 +223,6 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
           </div>
         )}
 
-
-
         <div className="flex justify-between mt-2 ml-5">
           <div className="cursor-pointer">
             <label className="inline-flex items-center">
@@ -277,28 +233,27 @@ const OffcanvasMenu = ({ isOpen, onFilterChange }) => {
 
         <div className="bg-white py-2 mt-1">
           <div className="flex items-center ml-10">
-          <input
-    type="number"
-    placeholder="Min"
-    value={minExperience}
-    min="0"
-    max="15"
-    onChange={(e) => handleExperienceChange(e, 'min')}
-    className="border-b form-input w-20 mr-2"
-/>
-<span className="mx-2">to</span>
-<input
-    type="number"
-    placeholder="Max"
-    value={maxExperience}
-    min="1"
-    max="15"
-    onChange={(e) => handleExperienceChange(e, 'max')}
-    className="border-b form-input w-20"
-/>
+            <input
+              type="number"
+              placeholder="Min"
+              value={minExperience}
+              min="0"
+              max="15"
+              onChange={(e) => handleExperienceChange(e, 'min')}
+              className="border-b form-input w-20 mr-2"
+            />
+            <span className="mx-2">to</span>
+            <input
+              type="number"
+              placeholder="Max"
+              value={maxExperience}
+              min="1"
+              max="15"
+              onChange={(e) => handleExperienceChange(e, 'max')}
+              className="border-b form-input w-20"
+            />
           </div>
         </div>
-
 
         {/* Skill/Technology */}
         <div className="flex mt-2 justify-between">
@@ -383,16 +338,14 @@ const Candidate = () => {
   const handleCandidateClick = (candidate) => {
     setSelectedCandidate(candidate);
   };
+
   const handleCloseProfile = () => {
     setSelectedCandidate(null);
   };
 
-
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState("");
-
   const userId = localStorage.getItem("userId");
-
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080');
@@ -445,7 +398,7 @@ const Candidate = () => {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [userId]);
 
   const [candidateData, setCandidateData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -484,7 +437,6 @@ const Candidate = () => {
     });
   };
 
-  
   useEffect(() => {
     setCurrentPage(0);
   }, [selectedFilters]);
@@ -497,13 +449,7 @@ const Candidate = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const rowsPerPage = 10;
 
-
-
-
-
-  const [activeArrow, setActiveArrow] = useState(null);
-
-
+  const [activeArrow] = useState(null);
 
   const nextPage = () => {
     console.log("Next button clicked");
@@ -525,20 +471,15 @@ const Candidate = () => {
     }
   };
 
-
   const totalPages = Math.ceil(FilteredData().length / rowsPerPage);
   console.log("Total pages:", totalPages);
-  
+
   const startIndex = currentPage * rowsPerPage;
   const endIndex = Math.min(startIndex + rowsPerPage, FilteredData().length);
-  
+
   const currentFilteredRows = FilteredData()
     .slice(startIndex, endIndex)
     .reverse();
-
-  
-
-  const noResults = currentFilteredRows.length === 0 && searchQuery !== "";
 
   const [tableVisible] = useState(true);
   const [viewMode, setViewMode] = useState("list");
@@ -642,7 +583,6 @@ const Candidate = () => {
               </div>
             </div>
 
-
             <div>
               <span className="p-2 text-xl mr-2">
                 {currentPage + 1}/{totalPages}
@@ -667,8 +607,6 @@ const Candidate = () => {
                 </span>
               </Tooltip>
             </div>
-
-
 
             <div className="ml-4 text-2xl border-2 rounded-md p-2">
               <Tooltip title="Filter" enterDelay={300} leaveDelay={100} arrow>
@@ -748,7 +686,7 @@ const Candidate = () => {
                                     className="flex items-center gap-3"
                                     onClick={() => handleCandidateClick(candidate)}
                                   >
-                                                                         {candidate.imageUrl ? (
+                                    {candidate.imageUrl ? (
                                       <img src={candidate.imageUrl} alt="Candidate" className="w-7 h-7 rounded" />
                                     ) : (
                                       candidate.Gender === "Male" ? (
@@ -786,10 +724,6 @@ const Candidate = () => {
                                           onClick={() => handleCandidateClick(candidate)}
                                         >
                                           View
-
-
-
-
                                         </p>
                                         <p className="hover:bg-gray-200 p-1 rounded pl-3" onClick={() => handleEditClick(candidate)}>Edit</p>
                                         <p className="hover:bg-gray-200 p-1 rounded pl-3" onClick={() => handlePopupClick(candidate.LastName)}>
@@ -864,7 +798,7 @@ const Candidate = () => {
                                 </div>
                                 <div className="flex">
                                   <div className="w-16 h-14 mt-3 ml-1 mr-3 overflow-hidden cursor-pointer rounded">
-                                  {candidate.imageUrl ? (
+                                    {candidate.imageUrl ? (
                                       <img src={candidate.imageUrl} alt="Candidate" className="w-full h-full rounded" />
                                     ) : (
                                       candidate.Gender === "Male" ? (
@@ -927,10 +861,6 @@ const Candidate = () => {
             </div>
           </div>
         </>)}
-
-      {/* {selectedCandidate && (
-        <CandidateProfileDetails candidate={selectedCandidate} />
-      )} */}
 
       {selectedCandidate && (
         <CandidateProfileDetails candidate={selectedCandidate} onCloseprofile={handleCloseProfile} />
