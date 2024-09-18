@@ -1,3 +1,4 @@
+
 const express = require('express');
 const connectDB = require('./db.js');
 const Candidate = require('./models/candidate.js');
@@ -8,15 +9,20 @@ const HigherQualification = require('./models/higherqualification.js');
 const University_CollegeName = require('./models/college.js')
 const Skills = require('./models/skills.js');
 const Company = require('./models/company.js');
+const Location = require('./models/locations.js');
 const Industry = require('./models/industries.js');
 const { Interview, InterviewHistory } = require('./models/Interview.js');
 const ScheduleRounds = require('./models/ScheduleRounds');
-const { NewQuestion } = require('./models/NewQuestion.js');
+const { NewQuestion, QuestionOption } = require('./models/NewQuestion.js');
 const Notifications = require('./models/notification.js');
 const { MockInterview, MockInterviewHistory } = require('./models/mockinterview.js');
 const TeamAvailability = require('./models/teamsavailability.js');
 const bodyParser = require('body-parser');
+// const LoginBasicDetails1 = require('./models/LoginBasicDetails1.js');
+// const LoginAdditionalDetails = require('./models/LoginAdditionalDetails.js');
+// const LoginBasicDetails2 = require('./models/LoginBasicDetails2.js');
 const LoginAvailability = require('./models/LoginAvailability.js');
+// const LinkedInDetails = require('./models/LinkedInDetails');
 const { Contacts, ContactHistory } = require('./models/Contacts.js')
 const { Users, UserHistory } = require("./models/Users.js")
 const nodemailer = require('nodemailer');
@@ -33,22 +39,27 @@ const { exec } = require('child_process');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-
-connectDB();
 app.use(express.json());
 app.use(bodyParser.json());
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3002'
+  origin: process.env.CORS_ORIGIN,
 }));
 
+connectDB();
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: process.env.WS_PORT || 8080 });
+
+console.log('CORS_ORIGIN:', process.env.CORS_ORIGIN);
+console.log('WS_PORT:', process.env.WS_PORT);
+console.log('MONGODB_URI:', process.env.MONGODB_URI);
+
 
 const SECRET_KEY = 'vpaas-magic-cookie-019af5b8e9c74f42a44947ee0c08572d';
 const TOKEN_EXPIRATION = '1h';
 app.get('/generate-token', (req, res) => {
   const payload = {
+    // Add your payload data here
   };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: TOKEN_EXPIRATION });
   res.json({ token });
@@ -70,17 +81,6 @@ wss.on('connection', (ws) => {
 
   });
 });
-
-app.get('/generate-token', (req, res) => {
-  const payload = {
-    // Add your payload data here
-  };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: TOKEN_EXPIRATION });
-  res.json({ token });
-});
-
-
-
 
 const broadcastImageData = async (type, id) => {
   let updatedDocument;
@@ -188,7 +188,7 @@ app.delete('/candidate/:id/image', async (req, res) => {
     }
 
     res.status(200).send('Image deleted successfully.');
-    broadcastImageData('candidate', id);
+    broadcastImageData('candidate', id); 
   } catch (error) {
     console.error('Error deleting image:', error);
     res.status(500).send('Server error');
@@ -216,13 +216,12 @@ app.delete('/team/:id/image', async (req, res) => {
     }
 
     res.status(200).send('Image deleted successfully.');
-    broadcastImageData('team', id);
+    broadcastImageData('team', id); // Broadcast image data update
   } catch (error) {
     console.error('Error deleting image:', error);
     res.status(500).send('Server error');
   }
 });
-
 app.get('/images/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -244,79 +243,81 @@ app.get('/images/:id', async (req, res) => {
   }
 });
 
-
-
-
-
 // ------------------------------  video call start ------------------------------
-// const http = require('http');
+const http = require('http');
 
-// const socketIo = require('socket.io');
+const socketIo = require('socket.io');
 
-// const server = http.createServer(app);
-// const io = require('socket.io')(3001, { cors: true });
+const server = http.createServer(app);
+const PORT = process.env.PORT || 5000;
+const io = require('socket.io')(3001, { cors: true });
 
-// const rooms = {};
+const rooms = {};
 
-// io.on('connection', (socket) => {
-//   socket.on('join-room', (roomId, userId, userName) => {
-//     const isAdmin = !rooms[roomId];
-//     if (!rooms[roomId]) {
-//       rooms[roomId] = { admin: userId, participants: [] };
-//     }
-//     rooms[roomId].participants.push({ userId, userName, muted: false, videoOn: false });
-//     socket.join(roomId);
-//     socket.broadcast.to(roomId).emit('user-connected', { userId, userName, isAdmin: false });
-//     socket.emit('admin-status', { userId, isAdmin });
-//     io.to(roomId).emit('participant-list', rooms[roomId].participants);
-//     socket.on('toggle-mic', (userId, muted) => {
-//       if (rooms[roomId]) {
-//         const participant = rooms[roomId].participants.find(p => p.userId === userId);
-//         if (participant) {
-//           participant.muted = muted;
-//           io.to(roomId).emit('participant-list', rooms[roomId].participants);
-//         }
-//       }
-//     });
-//     socket.on('toggle-video', (userId, videoOn) => {
-//       if (rooms[roomId]) {
-//         const participant = rooms[roomId].participants.find(p => p.userId === userId);
-//         if (participant) {
-//           participant.videoOn = videoOn;
-//           io.to(roomId).emit('participant-list', rooms[roomId].participants);
-//         }
-//       }
-//     });
+io.on('connection', (socket) => {
+  socket.on('join-room', (roomId, userId, userName) => {
+    const isAdmin = !rooms[roomId];
+    if (!rooms[roomId]) {
+      rooms[roomId] = { admin: userId, participants: [] };
+    }
+    rooms[roomId].participants.push({ userId, userName, muted: false, videoOn: false });
+    socket.join(roomId);
+    socket.broadcast.to(roomId).emit('user-connected', { userId, userName, isAdmin: false });
+    socket.emit('admin-status', { userId, isAdmin });
+    io.to(roomId).emit('participant-list', rooms[roomId].participants);
+    socket.on('toggle-mic', (userId, muted) => {
+      if (rooms[roomId]) {
+        const participant = rooms[roomId].participants.find(p => p.userId === userId);
+        if (participant) {
+          participant.muted = muted;
+          io.to(roomId).emit('participant-list', rooms[roomId].participants);
+        }
+      }
+    });
+    socket.on('toggle-video', (userId, videoOn) => {
+      if (rooms[roomId]) {
+        const participant = rooms[roomId].participants.find(p => p.userId === userId);
+        if (participant) {
+          participant.videoOn = videoOn;
+          io.to(roomId).emit('participant-list', rooms[roomId].participants);
+        }
+      }
+    });
 
-//     socket.on('send-message', ({ roomId, userName, message }) => {
-//       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-//       const msg = { sender: userName, text: message, time };
-//       io.to(roomId).emit('receive-message', msg);
-//     });
+    socket.on('send-message', ({ roomId, userName, message }) => {
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const msg = { sender: userName, text: message, time };
+      io.to(roomId).emit('receive-message', msg);
+    });
 
-//     socket.on('disconnect', () => {
-//       if (rooms[roomId] && rooms[roomId].admin === userId) {
-//         io.to(roomId).emit('end-call');
-//         delete rooms[roomId];
-//       } else {
-//         socket.broadcast.to(roomId).emit('user-disconnected', userId);
-//         if (rooms[roomId]) {
-//           rooms[roomId].participants = rooms[roomId].participants.filter(participant => participant.userId !== userId);
-//           io.to(roomId).emit('participant-list', rooms[roomId].participants);
-//         }
-//       }
-//     });
+    socket.on('disconnect', () => {
+      if (rooms[roomId] && rooms[roomId].admin === userId) {
+        io.to(roomId).emit('end-call');
+        delete rooms[roomId];
+      } else {
+        socket.broadcast.to(roomId).emit('user-disconnected', userId);
+        if (rooms[roomId]) {
+          rooms[roomId].participants = rooms[roomId].participants.filter(participant => participant.userId !== userId);
+          io.to(roomId).emit('participant-list', rooms[roomId].participants);
+        }
+      }
+    });
 
-//     socket.on('sending-signal', (payload) => {
-//       io.to(payload.userToSignal).emit('receiving-signal', { signal: payload.signal, callerID: payload.callerID });
-//     });
+    socket.on('sending-signal', (payload) => {
+      io.to(payload.userToSignal).emit('receiving-signal', { signal: payload.signal, callerID: payload.callerID });
+    });
 
-//     socket.on('returning-signal', (payload) => {
-//       io.to(payload.callerID).emit('receiving-returned-signal', { signal: payload.signal, id: socket.id });
-//     });
-//   });
+    socket.on('returning-signal', (payload) => {
+      io.to(payload.callerID).emit('receiving-returned-signal', { signal: payload.signal, id: socket.id });
+    });
+  });
+});
+
+// server.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
 // });
 
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // ------------------------------  video call end ------------------------------
 
@@ -354,6 +355,8 @@ app.get('/loginavailability/:userId', async (req, res) => {
 
 app.post('/loginavailability', async (req, res) => {
   const { day, timeSlots, contact } = req.body;
+  // Log the received data
+
   const availability = new LoginAvailability({ day, timeSlots, contact });
   try {
     const newAvailability = await availability.save();
@@ -698,6 +701,25 @@ app.get('/team/:id/availability', async (req, res) => {
   }
 });
 
+
+// app.get('/assessment/:id?', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     if (id) {
+//       const assessment = await Assessment.findById(id);
+//       if (!assessment) {
+//         return res.status(404).json({ message: 'Assessment not found' });
+//       }
+//       res.json(assessment);
+//     } else {
+//       const assessments = await Assessment.find();
+//       res.json(assessments);
+//     }
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
 app.get('/assessment', async (req, res) => {
   try {
     const { createdBy } = req.query;
@@ -751,8 +773,8 @@ app.post('/assessment/:assessmentId/section/:sectionId/question', async (req, re
     const question = req.body;
     section.Questions.push({
       ...question,
-      Options: question.Options || [],
-      ProgrammingDetails: question.ProgrammingDetails || null
+      Options: question.Options || [], // Ensure Options is an array
+      ProgrammingDetails: question.ProgrammingDetails || null // Ensure ProgrammingDetails is handled
     });
     await assessment.save();
     res.status(201).json(question);
@@ -1552,15 +1574,18 @@ app.put('/contacts/:userId/availability', async (req, res) => {
 
     let availabilityDoc;
     if (contact.availability) {
+      // Update existing availability document
       availabilityDoc = await LoginAvailability.findById(contact.availability);
       if (!availabilityDoc) {
         return res.status(404).json({ message: 'Availability not found' });
       }
     } else {
+      // Create new availability document
       availabilityDoc = new LoginAvailability({ contact: contact._id });
       contact.availability = availabilityDoc._id;
     }
 
+    // Update or add days and time slots
     for (const updatedAvail of availability) {
       const existingDay = availabilityDoc.days.find(day => day.day === updatedAvail.day);
       if (existingDay) {
@@ -1575,6 +1600,7 @@ app.put('/contacts/:userId/availability', async (req, res) => {
 
     await availabilityDoc.save();
 
+    // Update TimeZone and PreferredDuration in the Contacts model
     contact.TimeZone = TimeZone;
     contact.PreferredDuration = PreferredDuration;
 
@@ -1973,30 +1999,17 @@ app.post('/run-code', async (req, res) => {
   }
 });
 
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
 
-
-// my deployment code   --->
-
-
-
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-// });
-
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-// Handle any other requests and serve the React app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-// my deployment code   <---
-
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('API is running...');
+  });
+}
 
 // async function clearAssessments() {
 //   try {
