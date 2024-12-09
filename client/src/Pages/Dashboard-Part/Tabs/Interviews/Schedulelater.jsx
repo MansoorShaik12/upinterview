@@ -8,13 +8,17 @@ import { fetchMultipleData } from "../../../../utils/dataUtils.js";
 import { validateInterviewData } from "../../../../utils/interviewValidation.js";
 import Cookies from "js-cookie";
 import Sidebar from "./Interviewers.jsx";
+import { usePermissions } from '../../../../PermissionsContext';
+import { useMemo } from "react";
 
 import { ReactComponent as MdOutlineCancel } from "../../../../icons/MdOutlineCancel.svg";
 import { ReactComponent as MdArrowDropDown } from "../../../../icons/MdArrowDropDown.svg";
 import { ReactComponent as IoIosAddCircle } from "../../../../icons/IoIosAddCircle.svg";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
-const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
+const Schedulelater = ({ onClose, onDataAdded }) => {
+  const { sharingPermissionscontext } = usePermissions();
+
   const userName = Cookies.get("userName");
   const orgId = Cookies.get("organizationId");
   const candidateRef = useRef(null);
@@ -36,9 +40,7 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  
   const [currentRoundIndex, setCurrentRoundIndex] = useState(null);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
 
@@ -52,6 +54,8 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
     setCurrentRoundIndex(index);
     setShowPopup(true);
   };
+
+ 
 
   const calculateEndTime = (startTime, duration) => {
     const [startHour, startMinute] = startTime.split(":").map(Number);
@@ -98,6 +102,8 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
     return `${formattedHour}:${minute} ${ampm}`;
   };
 
+ 
+  
   const handleStartTimeChange = (e) => {
     const startTime = e.target.value;
     setStartTime(formatTime(startTime));
@@ -134,9 +140,9 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
       const [filteredCandidates, filteredTeams] = await fetchMultipleData([
         {
           endpoint: "candidate",
-          sharingPermissions: sharingPermissions.candidate,
+          sharingPermissions: sharingPermissionscontext.candidate,
         },
-        { endpoint: "team", sharingPermissions: sharingPermissions.team },
+        { endpoint: "team", sharingPermissions: sharingPermissionscontext.team },
       ]);
       setCandidateData(filteredCandidates);
       setTeamData(filteredTeams);
@@ -145,7 +151,7 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
     } finally {
       setLoading(false);
     }
-  }, [sharingPermissions]);
+  }, [sharingPermissionscontext]);
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -351,7 +357,7 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
     }
   };
 
-  const interviews = ["My Self", "Interviewers", "Outsource Interviewer"];
+  const interviews = ["My Self", "Internal Interviewers", "Outsource Interviewer"];
   const navigate = useNavigate();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -375,7 +381,7 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
       setShowDropdowninterview(null);
       setIsTeamMemberSelected(false);
       setShowTeamMemberDropdown(false);
-    } else if (interview === "Interviewers") {
+    } else if (interview === "Internal Interviewers") {
       setIsSidebarOpen(true);
     } else if (interview === "Outsource Interviewer") {
       // navigate("/outsourceoption");
@@ -453,10 +459,10 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
   };
 
   const [selectedDuration, setSelectedDuration] = useState(
-    rounds.map((round) => round.duration || "")
+    rounds.map(() => "60 minutes")
   );
   const [showDropdownduration, setshowDropdownduration] = useState(null);
-  const durationOptions = ["30 minutes", "1 hour", "1:30 minutes", "2 hours"];
+  const durationOptions = ["30 minutes", "60 minutes", "90 minutes", "120 minutes"];
 
   const toggleDropdownduration = (index) => {
     setshowDropdownduration((prevIndex) =>
@@ -515,6 +521,25 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
     const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  const [selectedDate, setSelectedDate] = useState(getTodayDate()); // Default to today's date
+  const [startTime, setStartTime] = useState(getCurrentTime()); // Default to current time
+  const [endTime, setEndTime] = useState(calculateEndTime(getCurrentTime(), "60 minutes")); // Default end time
+
+  useEffect(() => {
+    const initialRounds = rounds.map(round => ({
+      ...round,
+      dateTime: `${getTodayDate()} ${getCurrentTime()} - ${calculateEndTime(getCurrentTime(), "60 minutes")}`
+    }));
+    setRounds(initialRounds);
+  }, []);
 
   const formatDate = (dateString) => {
     const [year, month, day] = dateString.split("-");
@@ -742,13 +767,11 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
     <>
       {showMainContent ? (
         <>
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div
-              className="bg-white shadow-lg overflow-hidden"
-              style={{ width: "100%", height: "100%" }}
-            >
+          <div >
+          <div className="flex flex-col h-screen">
+              
               {/* Header - Fixed */}
-              <div className="border-b p-2">
+              <div className="border-b p-2 flex-shrink-0">
                 <div className="mx-8 my-1 flex justify-between items-center">
                   <p className="text-2xl">
                     <span className="text-black font-semibold cursor-pointer">
@@ -765,10 +788,8 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
               </div>
 
               {/* Middle Content - Scrollable */}
-              <div
-                className="overflow-y-auto"
-                style={{ height: "calc(100% - 112px)" }}
-              >
+              <div className="overflow-y-auto flex-grow" style={{ padding: "0 40px" }}>
+
                 <div className="font-semibold text-xl mt-5 ml-10">
                   Interview Details:
                   <div className="flex justify-between -mt-5 mr-10">
@@ -1563,23 +1584,23 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
                   ))}
                 </div>
               </div>
-              {/* Save Button - Fixed */}
-              <div className="flex justify-end border-t mr-5">
-                <div className="flex p-1 gap-2 float-end">
-                  <button
-                    className="border border-custom-blue mt-3 p-3 rounded py-1 mr-5"
-                    onClick={handleClose}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="bg-custom-blue mt-3 text-white p-3 rounded py-1 shadow-lg mr-5"
-                    onClick={handleSave}
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
+              {/* Footer - Fixed */}
+          <div className="flex justify-end border-t p-2 flex-shrink-0">
+            <div className="flex p-1 gap-2">
+              <button
+                className="border border-custom-blue mt-3 p-3 rounded py-1 mr-5"
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-custom-blue mt-3 text-white p-3 rounded py-1 shadow-lg mr-5"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            </div>
+          </div>
             </div>
           </div>
         </>
@@ -1591,14 +1612,12 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
                 <AddCandidateForm
                   onClose={handleclose}
                   onCandidateAdded={handleCandidateAdded}
-                  sharingPermissions={sharingPermissions.candidate}
                   onDataAdded={handleDataAdded}
                 />
               )}
               {showNewteamContent && (
                 <AddteamForm
                   onClose={handleclose}
-                  sharingPermissions={sharingPermissions.team}
                 />
               )}
             </div>
@@ -1714,8 +1733,8 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
         </div>
       )}
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-15 z-50">
-          <div className="fixed inset-y-0 right-0 z-50 sm:w-full md:w-3/4 lg:w-1/2 xl:w-1/2 2xl:w-1/2 bg-white shadow-lg transition-transform duration-5000 transform">
+        <div >
+          <div >
             <Sidebar
               onClose={closeSidebar}
               onOutsideClick={handleOutsideClick}

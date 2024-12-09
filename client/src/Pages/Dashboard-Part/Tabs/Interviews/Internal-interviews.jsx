@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
 import Editinternallater from "./Edit-Internal-later";
-import SchedulePopup from "./Schedulelater";
+import Schedulelater from "./Schedulelater";
 import SchedulePopup1 from "./Schedulenow";
 import InterviewProfileDetails from "./Internalprofiledetails";
 import { fetchFilterData, handleWebSocket } from "../../../../utils/dataUtils.js";
@@ -13,6 +13,8 @@ import maleImage from "../../../Dashboard-Part/Images/man.png";
 import femaleImage from "../../../Dashboard-Part/Images/woman.png";
 import genderlessImage from "../../../Dashboard-Part/Images/transgender.png";
 import { fetchMasterData } from '../../../../utils/fetchMasterData.js';
+import { usePermissions } from '../../../../PermissionsContext';
+import { useMemo } from "react";
 
 import { ReactComponent as IoIosArrowBack } from '../../../../icons/IoIosArrowBack.svg';
 import { ReactComponent as IoIosArrowForward } from '../../../../icons/IoIosArrowForward.svg';
@@ -276,8 +278,10 @@ const OffcanvasMenu = ({ isOpen, onFilterChange, closeOffcanvas }) => {
   );
 };
 
-const Internal = ({ objectPermissions, sharingPermissions }) => {
-  const interviewPermissions = sharingPermissions.interviews || {};
+const Internal = () => {
+  const { sharingPermissionscontext, objectPermissionscontext } = usePermissions();
+  const sharingPermissions = useMemo(() => sharingPermissionscontext.interviews || {}, [sharingPermissionscontext]);
+  const objectPermissions = useMemo(() => objectPermissionscontext.interviews || {}, [objectPermissionscontext]);
   useEffect(() => {
     document.title = "Internal interviews";
   }, []);
@@ -287,12 +291,19 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
     try {
       const filteredInterviews = await fetchFilterData(
         "interview",
-        interviewPermissions
+        sharingPermissions
       );
 
       // Fetch candidate data for each interview
       const interviewsWithCandidates = await Promise.all(
         filteredInterviews.map(async (interview) => {
+          if (!interview.CandidateId) {
+            // Skip fetching if CandidateId does not exist
+            return {
+              ...interview,
+              candidate: null,
+            };
+          }
           try {
             const candidateResponse = await axios.get(
               `${process.env.REACT_APP_API_URL}/candidate/${interview.CandidateId}`
@@ -328,6 +339,13 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
     } finally {
       setLoading(false);
     }
+  };
+  useEffect(() => {
+    fetchInterviewData();
+  }, [sharingPermissions]);
+
+  const handleDataAdded = () => {
+    fetchInterviewData();
   };
 
   // useEffect(() => {
@@ -369,7 +387,7 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
   // fetching candidate data from the mongo db
   // -----------------------------------------
   const [candidateData, setCandidateData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -659,8 +677,20 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
     }
   };
 
+  const [isScheduleLaterOpen, setScheduleLaterOpen] = useState(false);
+
+  const openScheduleLater = () => {
+    setScheduleLaterOpen(true);
+  };
+
+  const closeScheduleLater = () => {
+    setScheduleLaterOpen(false);
+  };
+
   return (
     <>
+      {!isScheduleLaterOpen && (
+<>
       {/* 1 */}
       <div className="fixed top-16 sm:top-20 md:top-24 left-0 right-0 z-30">
         <div className="flex justify-between p-4">
@@ -693,7 +723,7 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
                     className="block px-4 py-1 hover:bg-gray-200 hover:text-gray-800 rounded-md"
                     onClick={() => {
                       setinterviewDropdown(false);
-                      openSchedulePopup(); // Open popup on click
+                      openScheduleLater();
                     }}
                   >
                     Schedule for Later
@@ -1131,9 +1161,9 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
                                       </p>
                                       <p
                                         className={`hover:bg-gray-200 p-1 rounded pl-3  ${interview.ScheduleType ===
-                                            "instantinterview"
-                                            ? "cursor-not-allowed text-gray-400"
-                                            : ""
+                                          "instantinterview"
+                                          ? "cursor-not-allowed text-gray-400"
+                                          : ""
                                           }`}
                                         onClick={() =>
                                           interview.ScheduleType !==
@@ -1145,9 +1175,9 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
                                       </p>
                                       <p
                                         className={`hover:bg-gray-200 p-1 rounded pl-3 ${interview.ScheduleType ===
-                                            "instantinterview"
-                                            ? "cursor-not-allowed text-gray-400"
-                                            : ""
+                                          "instantinterview"
+                                          ? "cursor-not-allowed text-gray-400"
+                                          : ""
                                           }`}
                                         onClick={() =>
                                           interview.ScheduleType !==
@@ -1318,13 +1348,14 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
           </div>
         )}
       </div>
+      </>
+      )}
       {showEditLater && (
         <Editinternallater
           onClose={() => setShowEditLater(false)}
           candidate1={showEditLater}
           rounds={showEditLater.rounds}
           interviewers={showEditLater.interviewers}
-          sharingPermissions={sharingPermissions}
         />
       )}
       {showPopup && (
@@ -1333,16 +1364,16 @@ const Internal = ({ objectPermissions, sharingPermissions }) => {
           onConfirm={(e) => handlePopupConfirm(e, currentInterviewId)}
         />
       )}
-      {isSchedulePopupVisible && (
-        <SchedulePopup
-          onClose={closeSchedulePopup}
-          sharingPermissions={sharingPermissions}
+      {isScheduleLaterOpen && (
+        <Schedulelater
+          onClose={closeScheduleLater}
+          onDataAdded={handleDataAdded}
         />
       )}
       {isSchedulePopupVisible1 && (
         <SchedulePopup1
           onClose={closeSchedulePopup1}
-          sharingPermissions={sharingPermissions}
+          onDataAdded={handleDataAdded}
         />
       )}
       {selectedCandidate && (

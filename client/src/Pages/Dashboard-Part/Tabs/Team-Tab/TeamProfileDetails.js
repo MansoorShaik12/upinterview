@@ -59,7 +59,6 @@ const TeamDetails = ({ candidate, onCloseprofile }) => {
 
   const { availability } = candidate;
 
-  console.log("Availability data:", availability);
 
   const daysOfWeek = [
     "Sunday",

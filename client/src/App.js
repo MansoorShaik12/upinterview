@@ -153,7 +153,7 @@ const App = () => {
           <Route path="/billing" element={<Billing />} />
           <Route path="/interview-question" element={<QuestionBank objectPermissions={objectPermissions.questionBank || {}} sharingPermissions={sharingPermissions.questionBank || {}} />} />
           <Route path="/newassessment" element={<NewAssessment />} />
-          {/* <Route path="/interviewcq" element={<Interviewcq />} /> */}
+          <Route path="/interviewcq" element={<Interviewcq />} />
           <Route path="/createCandidate" element={<CreateCandidate sharingPermissions={sharingPermissions} organization={organization} />} />
           <Route path="/team" element={<Team />} />
           <Route path="/createTeams" element={<CreateTeams />} />
@@ -162,14 +162,14 @@ const App = () => {
           <Route path="/position-profiledetails" element={<PositionProfileDetails />} />
           <Route path="/team-profiledetails" element={<TeamProfileDetails />} />
           <Route path="/interview-profiledetails" element={<InterviewProfileDetails />} />
-          {/* <Route path="/assessmentpopup" element={<AssessmentPopUp />} /> */}
-          {/* <Route path="/schedulelater" element={<Schedulelater />} />
+          <Route path="/assessmentpopup" element={<AssessmentPopUp />} />
+          <Route path="/schedulelater" element={<Schedulelater />} />
           <Route path="/schedulenow" element={<Schedulenow />} />
           <Route path="/newinterviewviewpage" element={<NewInterviewViewPage />} />
-          <Route path="/newinterviewrequest" element={<NewInterviewRequest />} /> */}
-          {/* <Route path="/internalprofiledetails" element={<Internalprofiledetails />} />
-          <Route path="/internalinterview" element={<Internalinterview objectPermissions={objectPermissions.interviews || {}} tabPermissions={tabPermissions.interviews || {}} sharingPermissions={sharingPermissions || {}} />} /> */}
-          {/* <Route path="/outsourceinterview" element={<Outsourceinterview objectPermissions={objectPermissions.interviews || {}} tabPermissions={tabPermissions.interviews || {}} sharingPermissions={sharingPermissions || {}} />} /> */}
+          <Route path="/newinterviewrequest" element={<NewInterviewRequest />} />
+          <Route path="/internalprofiledetails" element={<Internalprofiledetails />} />
+          <Route path="/internalinterview" element={<Internalinterview objectPermissions={objectPermissions.interviews || {}} tabPermissions={tabPermissions.interviews || {}} sharingPermissions={sharingPermissions || {}} />} />
+          <Route path="/outsourceinterview" element={<Outsourceinterview objectPermissions={objectPermissions.interviews || {}} tabPermissions={tabPermissions.interviews || {}} sharingPermissions={sharingPermissions || {}} />} />
           <Route path="/editcandidate" element={<EditCandidate />} />
           <Route path="/editassessment" element={<EditAssessment />} />
           <Route path="/editteam" element={<EditTeam />} />
@@ -181,7 +181,7 @@ const App = () => {
           <Route path="/assessmenttest" element={<AssessmentTest />} />
           <Route path="/assessmenttext" element={<AssessmentText />} />
           <Route path="/assessmentsubmit" element={<AssessmentSubmit />} />
-          {/* <Route path="/profile" element={<Profile />} /> */}
+          <Route path="/profile" element={<Profile />} />
           <Route path="/availability" element={<Availability objectPermissions={objectPermissions.availability || {}} tabPermissions={tabPermissions.availability || {}} sharingPermissions={sharingPermissions.availability || {}} />} />
           <Route path="/billing_details" element={<Billingdetails />} />
           <Route path="/invoice" element={<Invoice />} />
@@ -195,7 +195,7 @@ const App = () => {
           <Route path="/task" element={<Task sharingPermissions={sharingPermissions} />} />
 
           {/* Start Interviews */}
-          {/* <Route path="/candidatevc" element={<CandidateVC />} />
+          <Route path="/candidatevc" element={<CandidateVC />} />
           <Route path="/videocallbutton" element={<VideoCallButton />} />
           <Route path="/masterdata" element={<MasterData objectPermissions={objectPermissions.masterdata || {}} tabPermissions={tabPermissions.masterdata || {}} sharingPermissions={sharingPermissions.masterdata || {}} />} />
           <Route path="/users" element={<Users />} />
@@ -204,15 +204,15 @@ const App = () => {
           <Route path="/user-profiledetails" element={<UserProfileDetails />} />
           <Route path="/contact-profiledetails" element={<ContactProfileDetails />} />
           <Route path="/inquirydesk" element={<Inquirydesk />} />
-          <Route path="/profilefromapps" element={<Profilefromapps />} /> */}
+          <Route path="/profilefromapps" element={<Profilefromapps />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/price" element={<Price />} />
           <Route path="/jitsimeetingstart" element={<JitsiMeeting roomName={roomName} displayName={displayName} />} />
           <Route path="/organization" element={<Organization />} />
-          {/* <Route path="/connected_apps" element={<Connected_apps />} />
+          <Route path="/connected_apps" element={<Connected_apps />} />
           <Route path="/access_token" element={<Access_token />} />
           <Route path="/auth_token" element={<Auth_token />} />
-          <Route path="/apis" element={<APIs />} /> */}
+          <Route path="/apis" element={<APIs />} />
         </Routes>
       </div>
     </React.Fragment>

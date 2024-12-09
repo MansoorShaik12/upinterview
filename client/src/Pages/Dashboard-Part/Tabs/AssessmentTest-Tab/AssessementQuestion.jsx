@@ -158,11 +158,12 @@ const AssessmentQuestion = () => {
 
                     let isCorrect = false;
 
+                    // Determine correctness based on question type
                     switch (question.QuestionType) {
                         case "MCQ":
                             const userAnswerIndex = selectedOptions[sectionIndex][questionIndex];
                             const userAnswerText = question.Options[userAnswerIndex];
-                            givenAnswer = userAnswerText;
+                            givenAnswer = userAnswerText; // Set givenAnswer to the text of the selected option
                             isCorrect = userAnswerText === correctAnswer;
                             break;
                         case "Short Text(Single line)":
@@ -189,6 +190,7 @@ const AssessmentQuestion = () => {
 
                     const marks = isCorrect ? score : 0;
 
+                    // Log the question data for debugging
                     console.log({
                         questionId: question._id,
                         correctAnswer,
@@ -207,6 +209,7 @@ const AssessmentQuestion = () => {
                 })
             );
 
+            // Prepare section data
             const sectionsData = assessment.Sections.map((section, sectionIndex) => {
                 const answeredQuestions = selectedOptions[sectionIndex].filter(option => option !== "").length;
                 const totalQuestions = section.Questions.length;
@@ -221,6 +224,9 @@ const AssessmentQuestion = () => {
                     totalScore
                 };
             });
+
+            // Log the entire questionsData array
+            console.log('Questions Data:', questionsData);
 
             const response = await fetch(`${process.env.REACT_APP_API_URL}/assessmenttest`, {
                 method: 'POST',
@@ -358,6 +364,7 @@ const AssessmentQuestion = () => {
         }
     }, [timeSpent, navigate]);
 
+
     const handleMCQInputChange = (optionIndex, questionIndex) => {
         setSelectedOptions(prevSelectedOptions => {
             const newSelectedOptions = [...prevSelectedOptions];
@@ -376,6 +383,7 @@ const AssessmentQuestion = () => {
         });
     };
 
+
     const handlePrevSectionClick = () => {
         if (selectedSection > 0) {
             setSelectedSection(selectedSection - 1);
@@ -392,6 +400,7 @@ const AssessmentQuestion = () => {
             return newAnswerLater;
         });
 
+        // Clear the error for the current question when the checkbox is checked
         setQuestionErrors(prevErrors => {
             const newErrors = [...prevErrors];
             newErrors[questionIndex] = false;

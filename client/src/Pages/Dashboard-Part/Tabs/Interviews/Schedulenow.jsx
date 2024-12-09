@@ -8,6 +8,8 @@ import OutsourceOption from "./OutsourceOption";
 import { fetchMultipleData } from "../../../../utils/dataUtils.js";
 import { validateInterviewData } from "../../../../utils/interviewValidation.js";
 import Sidebar from "./Interviewers.jsx";
+import { usePermissions } from '../../../../PermissionsContext';
+import { useMemo } from "react";
 
 import { ReactComponent as MdOutlineCancel } from "../../../../icons/MdOutlineCancel.svg";
 import { ReactComponent as MdArrowDropDown } from "../../../../icons/MdArrowDropDown.svg";
@@ -17,7 +19,9 @@ import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
 import Cookies from "js-cookie";
 
-const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
+const Schedulenow = ({ onClose, onDataAdded }) => {
+  const { sharingPermissionscontext } = usePermissions();
+
   const userName = Cookies.get("userName");
   const navigate = useNavigate();
   const candidateRef = useRef(null);
@@ -59,9 +63,9 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
       const [filteredCandidates, filteredTeams] = await fetchMultipleData([
         {
           endpoint: "candidate",
-          sharingPermissions: sharingPermissions.candidate,
+          sharingPermissions: sharingPermissionscontext.candidate,
         },
-        { endpoint: "team", sharingPermissions: sharingPermissions.team },
+        { endpoint: "team", sharingPermissions: sharingPermissionscontext.team },
       ]);
       setCandidateData(filteredCandidates);
       setTeamData(filteredTeams);
@@ -70,7 +74,7 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
     } finally {
       setLoading(false);
     }
-  }, [sharingPermissions]);
+  }, [sharingPermissionscontext]);
 
   useEffect(() => {
     fetchData();
@@ -1413,7 +1417,6 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
                 <AddCandidateForm
                   onClose={handleClose}
                   onCandidateAdded={handleCandidateAdded}
-                  sharingPermissions={sharingPermissions.candidate}
                   onDataAdded={handleDataAdded}
                 />
               )}
@@ -1549,4 +1552,4 @@ const Schedulelater = ({ onClose, sharingPermissions, onDataAdded }) => {
   );
 };
 
-export default Schedulelater;
+export default Schedulenow;

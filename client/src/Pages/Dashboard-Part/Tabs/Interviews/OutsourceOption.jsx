@@ -9,6 +9,10 @@ import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import maleImage from "../../../Dashboard-Part/Images/man.png";
 import genderlessImage from "../../../Dashboard-Part/Images/transgender.png";
+import { usePermissions } from '../../../../PermissionsContext';
+import { useMemo } from 'react';
+
+
 
 import { ReactComponent as IoArrowBack } from "../../../../icons/IoArrowBack.svg";
 import { ReactComponent as IoMdSearch } from "../../../../icons/IoMdSearch.svg";
@@ -18,110 +22,88 @@ import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { ReactComponent as MdKeyboardArrowUp } from "../../../../icons/MdKeyboardArrowUp.svg";
 import { ReactComponent as MdKeyboardArrowDown } from "../../../../icons/MdKeyboardArrowDown.svg";
 import { fetchMasterData } from "../../../../utils/fetchMasterData.js";
+import { fetchFilterData } from '../../../../utils/dataUtils.js';
 
 const OffcanvasMenu = ({ isOpen, onFilterChange, closeOffcanvas }) => {
-  const [isStatusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [isTechDropdownOpen, setTechDropdownOpen] = useState(false);
-  const [isStatusMainChecked, setStatusMainChecked] = useState(false);
   const [isTechMainChecked, setTechMainChecked] = useState(false);
-  const [selectedStatusOptions, setSelectedStatusOptions] = useState([]);
   const [selectedTechOptions, setSelectedTechOptions] = useState([]);
-  const isAnyOptionSelected =
-    selectedStatusOptions.length > 0 || selectedTechOptions.length > 0;
+  const isAnyOptionSelected = selectedTechOptions.length > 0;
   const handleUnselectAll = () => {
-    setSelectedStatusOptions([]);
     setSelectedTechOptions([]);
-    setStatusMainChecked(false);
     setTechMainChecked(false);
-    setMinExperience("");
-    setMaxExperience("");
-    onFilterChange({ status: [], tech: [], experience: { min: "", max: "" } });
+    setMinExperience('');
+    setMaxExperience('');
+    onFilterChange({ status: [], tech: [], experience: { min: '', max: '' } });
   };
   useEffect(() => {
-    if (!isStatusMainChecked) setSelectedStatusOptions([]);
     if (!isTechMainChecked) setSelectedTechOptions([]);
-  }, [isStatusMainChecked, isTechMainChecked]);
-  const handleStatusMainToggle = () => {
-    const newStatusMainChecked = !isStatusMainChecked;
-    setStatusMainChecked(newStatusMainChecked);
-    const newSelectedStatus = newStatusMainChecked
-      ? qualification.map((q) => q.QualificationName)
-      : [];
-    setSelectedStatusOptions(newSelectedStatus);
-  };
+  }, [isTechMainChecked]);
+
   const handleTechMainToggle = () => {
     const newTechMainChecked = !isTechMainChecked;
     setTechMainChecked(newTechMainChecked);
-    const newSelectedTech = newTechMainChecked
-      ? skills.map((s) => s.SkillName)
-      : [];
+    const newSelectedTech = newTechMainChecked ? skills.map(s => s.SkillName) : [];
     setSelectedTechOptions(newSelectedTech);
-  };
-  const handleStatusOptionToggle = (option) => {
-    const selectedIndex = selectedStatusOptions.indexOf(option);
-    const updatedOptions =
-      selectedIndex === -1
-        ? [...selectedStatusOptions, option]
-        : selectedStatusOptions.filter((_, index) => index !== selectedIndex);
 
-    setSelectedStatusOptions(updatedOptions);
   };
+
   const handleTechOptionToggle = (option) => {
     const selectedIndex = selectedTechOptions.indexOf(option);
-    const updatedOptions =
-      selectedIndex === -1
-        ? [...selectedTechOptions, option]
-        : selectedTechOptions.filter((_, index) => index !== selectedIndex);
+    const updatedOptions = selectedIndex === -1
+      ? [...selectedTechOptions, option]
+      : selectedTechOptions.filter((_, index) => index !== selectedIndex);
 
     setSelectedTechOptions(updatedOptions);
   };
   const [skills, setSkills] = useState([]);
-  const [qualification, setQualification] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const skillsData = await fetchMasterData("skills");
+        const skillsData = await fetchMasterData('skills');
         setSkills(skillsData);
-        const qualificationData = await fetchMasterData("qualification");
-        setQualification(qualificationData);
       } catch (error) {
-        console.error("Error fetching master data:", error);
+        console.error('Error fetching master data:', error);
       }
     };
     fetchData();
   }, []);
 
-  const [minExperience, setMinExperience] = useState("");
-  const [maxExperience, setMaxExperience] = useState("");
+  const [minExperience, setMinExperience] = useState('');
+  const [maxExperience, setMaxExperience] = useState('');
 
   const handleExperienceChange = (e, type) => {
     const value = Math.max(0, Math.min(15, e.target.value));
-    if (type === "min") {
+    if (type === 'min') {
       setMinExperience(value);
     } else {
       setMaxExperience(value);
     }
+
   };
   const Apply = () => {
     onFilterChange({
-      status: selectedStatusOptions,
       tech: selectedTechOptions,
       experience: { min: minExperience, max: maxExperience },
     });
     if (window.innerWidth < 1023) {
       closeOffcanvas();
     }
-  };
+  }
   return (
     <div
-      className="absolute w-72 sm:mt-5 md:w-full sm:w-full text-sm bg-white border right-0 z-30 h-[calc(100vh-200px)]"
+      className="w-72 text-xs bg-white border z-50 h-[calc(100vh-300px)]"
       style={{
         visibility: isOpen ? "visible" : "hidden",
         transform: isOpen ? "" : "translateX(50%)",
+        position: "absolute",
+        top: "0",
+        left: "0",
+        zIndex: "1000",
       }}
     >
       <div className="relative h-full flex flex-col">
-        <div className="absolute w-72 sm:w-full md:w-full border-b flex justify-between p-2 items-center bg-white z-10">
+        <div className="absolute w-72 border-b flex justify-between p-2 items-center bg-white z-10">
           <div>
             <h2 className="text-lg font-bold ">Filters</h2>
           </div>
@@ -129,10 +111,7 @@ const OffcanvasMenu = ({ isOpen, onFilterChange, closeOffcanvas }) => {
           <div>
             {(isAnyOptionSelected || minExperience || maxExperience) && (
               <div>
-                <button
-                  onClick={handleUnselectAll}
-                  className="font-bold text-md"
-                >
+                <button onClick={handleUnselectAll} className="font-bold text-md">
                   Clear Filters
                 </button>
               </div>
@@ -140,36 +119,6 @@ const OffcanvasMenu = ({ isOpen, onFilterChange, closeOffcanvas }) => {
           </div>
         </div>
         <div className="p-4 flex-grow overflow-y-auto mb-20 mt-10">
-          <div className="flex justify-between mt-2 ml-5">
-            <div className="cursor-pointer">
-              <label className="inline-flex items-center">
-                <span className="ml-3 font-bold">Experiences</span>
-              </label>
-            </div>
-          </div>
-          <div className="bg-white py-2 mt-1">
-            <div className="flex items-center ml-10">
-              <input
-                type="number"
-                placeholder="Min"
-                value={minExperience}
-                min="0"
-                max="15"
-                onChange={(e) => handleExperienceChange(e, "min")}
-                className="border-b form-input w-20"
-              />
-              <span className="mx-3">to</span>
-              <input
-                type="number"
-                placeholder="Max"
-                value={maxExperience}
-                min="1"
-                max="15"
-                onChange={(e) => handleExperienceChange(e, "max")}
-                className="border-b form-input w-20"
-              />
-            </div>
-          </div>
           {/* Skill/Technology */}
           <div className="flex mt-2 justify-between">
             <div className="cursor-pointer">
@@ -180,7 +129,7 @@ const OffcanvasMenu = ({ isOpen, onFilterChange, closeOffcanvas }) => {
                   checked={isTechMainChecked}
                   onChange={handleTechMainToggle}
                 />
-                <span className="ml-3 font-bold">Skill</span>
+                <span className="ml-3 font-bold">Skill/Technology</span>
               </label>
             </div>
             <div
@@ -204,26 +153,54 @@ const OffcanvasMenu = ({ isOpen, onFilterChange, closeOffcanvas }) => {
                     checked={selectedTechOptions.includes(option.SkillName)}
                     onChange={() => handleTechOptionToggle(option.SkillName)}
                   />
-                  <span className="ml-3 w-56 md:w-72 sm:w-72 text-xs">
-                    {option.SkillName}
-                  </span>
+                  <span className="ml-3 w-56  text-xs">{option.SkillName}</span>
                 </label>
               ))}
             </div>
           )}
+          <div className="flex justify-between mt-2 ml-5">
+            <div className="cursor-pointer">
+              <label className="inline-flex items-center">
+                <span className="ml-3 font-bold">Experience</span>
+              </label>
+            </div>
+          </div>
+          <div className="bg-white py-2 mt-1">
+            <div className="flex items-center ml-10">
+              <input
+                type="number"
+                placeholder="Min"
+                value={minExperience}
+                min="0"
+                max="15"
+                onChange={(e) => handleExperienceChange(e, 'min')}
+                className="border-b form-input w-20"
+              />
+              <span className="mx-3">to</span>
+              <input
+                type="number"
+                placeholder="Max"
+                value={maxExperience}
+                min="1"
+                max="15"
+                onChange={(e) => handleExperienceChange(e, 'max')}
+                className="border-b form-input w-20"
+              />
+            </div>
+          </div>
         </div>
         {/* Footer */}
-        <div className="fixed bottom-0 w-72 sm:w-full md:w-full bg-white space-x-3 flex justify-end border-t p-2">
+        <div className=" w-72 bg-white space-x-3 flex justify-end border-t p-2">
           <button
             type="submit"
-            className="bg-custom-blue p-2 rounded-md text-white"
+            className="bg-custom-blue p-2 rounded-md text-white font-semibold"
             onClick={closeOffcanvas}
           >
             Close
           </button>
           <button
             type="submit"
-            className="bg-custom-blue p-2 rounded-md text-white"
+            className="bg-custom-blue p-2 rounded-md text-white font-semibold"
             onClick={Apply}
           >
             Apply
@@ -234,59 +211,69 @@ const OffcanvasMenu = ({ isOpen, onFilterChange, closeOffcanvas }) => {
   );
 };
 
-const OutsourceOption = ({ onClose }) => {
+const OutsourceOption = ({ onClose, onSelectCandidates }) => {
+  const { sharingPermissionscontext } = usePermissions();
+  const sharingPermissions = useMemo(() => sharingPermissionscontext.candidate || {}, [sharingPermissionscontext]);
+
+  const interviewers = [
+    {
+      name: "John Doe",
+      company: "TATA",
+      role: "Backend Developer",
+      experience: "5-6 Years",
+      skills: "Java, Spring Boot, Microservices, REST APIs, SQL",
+      image: maleImage,
+      ratingImage: StarRating,
+      price: "USD $ 15",
+      introduction: "John is a seasoned backend developer with a passion for building scalable applications. He has extensive experience in Java and Spring Boot, and is adept at designing microservices architectures. John is committed to delivering high-quality code and enjoys mentoring junior developers. He has worked on various projects that required innovative solutions and has a knack for optimizing performance. In his free time, John contributes to open-source projects and stays updated with the latest industry trends. He believes in the importance of clean code and best practices, often advocating for code reviews and pair programming. John also enjoys participating in hackathons, where he collaborates with other developers to create impactful solutions. His strong analytical skills enable him to troubleshoot complex issues efficiently. Outside of coding, John is an avid hiker and enjoys exploring nature with his family."
+    },
+    {
+      name: "Jane Smith",
+      company: "Wipro",
+      role: "Data Scientist",
+      experience: "3-4 Years",
+      skills: "Python, Machine Learning, Data Analysis, Pandas, NumPy",
+      image: femaleImage,
+      ratingImage: StarRating,
+      price: "USD $ 25",
+      introduction: "Jane is a data enthusiast who loves turning data into actionable insights. With a strong background in machine learning and data analysis, she excels at creating predictive models. Jane is passionate about using data to solve complex problems and is always eager to learn new technologies. She has a proven track record of collaborating with cross-functional teams to drive data-driven decision-making. Jane is skilled in various data visualization tools, which she uses to present her findings effectively. She actively participates in data science meetups and workshops, sharing her knowledge and learning from others in the field. Jane also enjoys mentoring aspiring data scientists, helping them navigate their career paths. In her spare time, she writes articles on data science topics, contributing to online communities. Her curiosity drives her to explore new methodologies and tools, ensuring she stays at the forefront of the industry. When not working with data, Jane enjoys painting and finding inspiration in art."
+    },
+    {
+      name: "Joyy",
+      company: "Infosys",
+      role: "Backend Developer",
+      experience: "5-6 Years",
+      skills: "Java, Spring Boot, Microservices, REST APIs, SQL",
+      image: maleImage,
+      ratingImage: StarRating,
+      price: "USD $ 15",
+      introduction: "John is a seasoned backend developer with a passion for building scalable applications. He has extensive experience in Java and Spring Boot, and is adept at designing microservices architectures. John is committed to delivering high-quality code and enjoys mentoring junior developers. He has worked on various projects that required innovative solutions and has a knack for optimizing performance. In his free time, John contributes to open-source projects and stays updated with the latest industry trends. He believes in the importance of clean code and best practices, often advocating for code reviews and pair programming. John also enjoys participating in hackathons, where he collaborates with other developers to create impactful solutions. His strong analytical skills enable him to troubleshoot complex issues efficiently. Outside of coding, John is an avid hiker and enjoys exploring nature with his family."
+    },
+    {
+      name: "Smitha",
+      company: "TCS",
+      role: "Data Scientist",
+      experience: "3-4 Years",
+      skills: "Python, Machine Learning, Data Analysis, Pandas, NumPy",
+      image: femaleImage,
+      ratingImage: StarRating,
+      price: "USD $ 10",
+      introduction: "Jane is a data enthusiast who loves turning data into actionable insights. With a strong background in machine learning and data analysis, she excels at creating predictive models. Jane is passionate about using data to solve complex problems and is always eager to learn new technologies. She has a proven track record of collaborating with cross-functional teams to drive data-driven decision-making. Jane is skilled in various data visualization tools, which she uses to present her findings effectively. She actively participates in data science meetups and workshops, sharing her knowledge and learning from others in the field. Jane also enjoys mentoring aspiring data scientists, helping them navigate their career paths. In her spare time, she writes articles on data science topics, contributing to online communities. Her curiosity drives her to explore new methodologies and tools, ensuring she stays at the forefront of the industry. When not working with data, Jane enjoys painting and finding inspiration in art."
+    },
+  ];
+
   const [searchQuery, setSearchQuery] = useState("");
   const [cardData, setCardData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState(interviewers);
   const [value1, setValue1] = useState([1000, 2000]);
   const [showContent, setShowContent] = useState(true);
-  const [selectedPersonId, setSelectedPersonId] = useState(false);
-  const [isArrowUp1, setIsArrowUp1] = useState(false);
-  const [isArrowUp2, setIsArrowUp2] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
 
-  useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/contacts`
-        );
-        const freelancers = response.data.filter(
-          (contact) => contact.isFreelancer === "yes"
-        );
-        setCardData(freelancers);
-        setFilteredData(freelancers);
-      } catch (error) {
-        console.error("Error fetching contacts data:", error);
-      }
-    };
-    fetchContacts();
-  }, []);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
-  useEffect(() => {
-    const lowercasedQuery = searchQuery.toLowerCase();
-    const filtered = cardData.filter((item) => {
-      return (
-        (item.Name && item.Name.toLowerCase().includes(lowercasedQuery)) ||
-        (item.Experience &&
-          item.Experience.toLowerCase().includes(lowercasedQuery)) ||
-        (item.CurrentRole &&
-          item.CurrentRole.toLowerCase().includes(lowercasedQuery)) ||
-        (item.company &&
-          item.company.toLowerCase().includes(lowercasedQuery)) ||
-        (item.Technology &&
-          item.Technology.toLowerCase().includes(lowercasedQuery)) ||
-        (item.Introduction &&
-          item.Introduction.toLowerCase().includes(lowercasedQuery)) ||
-        (item.inr && item.inr.toLowerCase().includes(lowercasedQuery))
-      );
-    });
-    setFilteredData(filtered);
-  }, [searchQuery, cardData]);
+  const [selectedInterviewer, setSelectedInterviewer] = useState(null);
+
+
 
   function valuetext(value) {
     return `${value}°C`;
@@ -327,22 +314,33 @@ const OutsourceOption = ({ onClose }) => {
     label: `${i + 1}k`,
   }));
 
-  const toggleContent = (id) => {
-    setShowContent(false);
-    setSelectedPersonId(cardData.find((card) => card.id === id));
-  };
 
-  const toggleAntiContent = () => {
-    setShowContent(true);
-    setSelectedPersonId(false);
-  };
 
   const handleSearchInputChange = (event) => {
-    setSearchQuery(event.target.value);
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    const filtered = interviewers.filter((interviewer) => {
+      return (
+        interviewer.name.toLowerCase().includes(query) ||
+        interviewer.company.toLowerCase().includes(query) ||
+        interviewer.role.toLowerCase().includes(query)
+      );
+    });
+
+    setFilteredData(filtered);
   };
 
+
+
+  const toggleIntroduction = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
+  const handleViewClick = (interviewer) => {
+    setSelectedInterviewer(interviewer);
+  };
   const [isFilterActive, setIsFilterActive] = useState(false);
-  const [candidateData, setCandidateData] = useState([]);
 
   const handleFilterIconClick = () => {
     if (candidateData.length !== 0) {
@@ -350,71 +348,81 @@ const OutsourceOption = ({ onClose }) => {
       toggleMenu();
     }
   };
+  const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState("");
 
-  const [isMenuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
+  const fetchCandidateData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const filteredCandidates = await fetchFilterData('candidate', sharingPermissions);
+      const candidatesWithImages = filteredCandidates.map((candidate) => {
+        if (candidate.ImageData && candidate.ImageData.filename) {
+          const imageUrl = `${process.env.REACT_APP_API_URL}/${candidate.ImageData.path.replace(/\\/g, '/')}`;
+          return { ...candidate, imageUrl };
+        }
+        return candidate;
+      });
+      setCandidateData(candidatesWithImages);
+    } catch (error) {
+      console.error('Error fetching candidate data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [sharingPermissions]);
+  useEffect(() => {
+    fetchCandidateData();
+  }, [fetchCandidateData]);
 
-  const toggleArrow1 = () => setIsArrowUp1(!isArrowUp1);
-  const toggleArrow2 = () => setIsArrowUp2(!isArrowUp2);
+
+  const [candidateData, setCandidateData] = useState([]);
+  const [selectedCandidates, setSelectedCandidates] = useState([]);
+
 
   const [selectedFilters, setSelectedFilters] = useState({
-    status: [],
     tech: [],
-    experience: [],
+    experience: { min: '', max: '' },
   });
 
   const handleFilterChange = useCallback((filters) => {
     setSelectedFilters(filters);
   }, []);
 
-  const [selectedCandidate, setSelectedCandidate] = useState(null);
 
-  const handleCandidateClick = (candidate) => {
-    setSelectedPersonId(true);
-    setShowContent(true);
-  };
-  const [actionViewMore, setActionViewMore] = useState({});
 
-  const toggleAction = (id) => {
-    setActionViewMore((prev) => (prev === id ? null : id));
+
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
+
+  const toggleMenu = () => {
+    setMenuOpen(!isMenuOpen);
   };
-  const handleclose = () => {
-    setSelectedCandidate(null);
-    setActionViewMore(false);
+  const handleSelectCandidate = (candidateId) => {
+    setSelectedCandidates((prevSelected) => {
+      const isSelected = prevSelected.includes(candidateId);
+      const updatedSelection = isSelected
+        ? prevSelected.filter((id) => id !== candidateId)
+        : [...prevSelected, candidateId];
+
+      return updatedSelection;
+    });
   };
 
-  // Define an array of interviewers
-  const interviewers = [
-    {
-      name: "Rupha",
-      company: "TCS",
-      role: "Full Stack Developer",
-      experience: "2-3 Years",
-      skills: "NodeJS, ReactJS.....",
-      image: femaleImage,
-      ratingImage: StarRating,
-      price: "USD $ 10",
-      currency: "USD",
-      isArrowUp: isArrowUp1,
-      toggleArrow: toggleArrow1,
-    },
-    {
-      name: "Rupha",
-      company: "TCS",
-      role: "Full Stack Developer",
-      experience: "2-3 Years",
-      skills: "NodeJS, ReactJS.....",
-      image: femaleImage,
-      ratingImage: StarRating,
-      price: "INR 2000",
-      currency: "INR",
-      isArrowUp: isArrowUp2,
-      toggleArrow: toggleArrow2,
-    },
-  ];
+  useEffect(() => {
+    if (onSelectCandidates) {
+      onSelectCandidates(selectedCandidates);
+    }
+  }, [selectedCandidates, onSelectCandidates]);
+
+  const handleSelectAll = () => {
+    if (selectedCandidates.length === candidateData.length) {
+      setSelectedCandidates([]);
+    } else {
+      const allCandidateIds = candidateData.map((candidate) => candidate._id);
+      setSelectedCandidates(allCandidateIds);
+    }
+  };
+
 
   return (
     <>
@@ -448,372 +456,335 @@ const OutsourceOption = ({ onClose }) => {
                 </button>
               </div>
 
-              {/* filter and search */}
-              <div className="flex items-center mb-4 mt-2">
-                <div className="relative">
-                  <div className="w-[250px] ml-5 border rounded-md relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center">
-                      <button type="submit" className="p-2">
-                        <IoMdSearch className="text-custom-blue" />
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Search interviewers"
-                      value={searchQuery}
-                      onChange={handleSearchInputChange}
-                      className="rounded-full h-8 pl-10 text-left"
-                    />
-                  </div>
-                </div>
 
-                <div className="w-80 mt-7">
-                  <div className="text-center justify-center flex">
-                    <Box sx={{ width: 250 }}>
-                      <Slider
-                        getAriaLabel={() => "Minimum distance"}
-                        value={value1}
-                        onChange={handleChange1}
-                        valueLabelDisplay="auto"
-                        getAriaValueText={valuetext}
-                        step={1000}
-                        marks={marks}
-                        min={minValue}
-                        max={maxValue}
-                        sx={{
-                          "& .MuiSlider-thumb": {
-                            backgroundColor: "custom-blue",
-                          },
-                          "& .MuiSlider-rail": {
-                            backgroundColor: "custom-blue",
-                          },
-                          "& .MuiSlider-track": {
-                            backgroundColor: "custom-blue",
-                            border: `1px solid ${"custom-blue"}`,
-                          },
-                        }}
-                        disableSwap
+              <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 120px)', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <style>
+                  {`
+                    .hide-scrollbar::-webkit-scrollbar {
+                      display: none;
+                    }
+                  `}
+                </style>
+
+                {/* filter and search */}
+                <div className="flex items-center mb-4 mt-2">
+                  <div className="relative ">
+                    <div className=" ml-10 searchintabs border rounded-md relative py-[2px] w-[200px]">
+                      <div className="absolute inset-y-0 left-0 flex items-center">
+                        <button type="submit" className="p-2">
+                          <IoMdSearch className="text-custom-blue" />
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Search Interviewer"
+                        value={searchQuery}
+                        onChange={handleSearchInputChange}
+                        className="rounded-full h-8 focus:outline-none border-gray-800"
                       />
-                    </Box>
-                  </div>
-                </div>
-
-                <div className="ml-2 text-xl sm:text-md md:text-md border rounded-md p-2">
-                  <Tooltip
-                    title="Filter"
-                    enterDelay={300}
-                    leaveDelay={100}
-                    arrow
-                  >
-                    <span
-                      onClick={handleFilterIconClick}
-                      style={{
-                        opacity: candidateData.length === 0 ? 0.2 : 1,
-                        pointerEvents:
-                          candidateData.length === 0 ? "none" : "auto",
-                      }}
-                    >
-                      {isFilterActive ? (
-                        <LuFilterX className="text-custom-blue" />
-                      ) : (
-                        <FiFilter className="text-custom-blue" />
-                      )}
-                    </span>
-                  </Tooltip>
-                </div>
-              </div>
-
-              {/* Flex container for interviewer cards */}
-              <div className="flex">
-                {interviewers.map((interviewer, index) => (
-                  <div
-                    key={index}
-                    className="border border-custom-blue m-4 w-[300px] bg-white rounded-lg overflow-hidden"
-                  >
-                    <div className="flex items-start gap-4 p-2 bg-[#F5F9FA]">
-                      <div className="flex flex-col items-center">
-                        <img
-                          src={interviewer.image}
-                          alt="femaleImage"
-                          className="w-10 h-10 mr-4"
-                        />
-
-                        <img
-                          src={interviewer.ratingImage}
-                          alt="Rating"
-                          className="w-8 h-4 -mt-1 mr-4"
-                        />
-                        <p className="bg-blue-400 text-white rounded px-2">
-                          {interviewer.price}
-                        </p>
-                        <p className="text-gray-400 font-semibold mr-4 mt-[1px]">Skills:</p>
-                      </div>
-                      <div className="text-sm">
-                        <p className="font-bold text-blue-400">
-                          {interviewer.name}
-                        </p>
-                        <p>{interviewer.company}</p>
-                        <p>{interviewer.role}</p>
-                        <p>{interviewer.experience}</p>
-                        <p>{interviewer.skills}</p>
-                      </div>
-                      <div
-                        className="flex items-center text-2xl"
-                        onClick={interviewer.toggleArrow}
-                      >
-                        {interviewer.isArrowUp ? (
-                          <IoIosArrowUp />
-                        ) : (
-                          <IoIosArrowDown />
-                        )}
-                        
-                      </div>
-                      
                     </div>
-                    {interviewer.isArrowUp && (
-                      <div className="bg-[#F5F9FA]">
-                        <p className="font-bold text-gray-400 p-1">Introduction</p>
-                        <p className="p-2">Here are more details about the interviewer...</p>
+                  </div>
+
+                  <div className="w-80 mt-7">
+                    <div className="text-center justify-center flex">
+                      <Box sx={{ width: 250 }}>
+                        <Slider
+                          getAriaLabel={() => "Minimum distance"}
+                          value={value1}
+                          onChange={handleChange1}
+                          valueLabelDisplay="auto"
+                          getAriaValueText={valuetext}
+                          step={1000}
+                          marks={marks}
+                          min={minValue}
+                          max={maxValue}
+                          sx={{
+                            "& .MuiSlider-thumb": {
+                              backgroundColor: "custom-blue",
+                            },
+                            "& .MuiSlider-rail": {
+                              backgroundColor: "custom-blue",
+                            },
+                            "& .MuiSlider-track": {
+                              backgroundColor: "custom-blue",
+                              border: `1px solid ${"custom-blue"}`,
+                            },
+                          }}
+                          disableSwap
+                        />
+                      </Box>
+                    </div>
+                  </div>
+
+                  <div className="ml-2 text-xl border rounded-md p-2 relative">
+                    <Tooltip
+                      title="Filter"
+                      enterDelay={300}
+                      leaveDelay={100}
+                      arrow
+                    >
+                      <span
+                        onClick={handleFilterIconClick}
+                        style={{
+                          opacity: candidateData.length === 0 ? 0.2 : 1,
+                          pointerEvents: candidateData.length === 0 ? "none" : "auto",
+                        }}
+                      >
+                        {isFilterActive ? (
+                          <LuFilterX className="text-custom-blue" />
+                        ) : (
+                          <FiFilter className="text-custom-blue" />
+                        )}
+                      </span>
+                    </Tooltip>
+
+                    {/* OffcanvasMenu positioned below the filter icon with mr-80 */}
+                    {isMenuOpen && (
+                      <div className="absolute top-full mt-2" style={{ left: '-600%' }}>
+                        <OffcanvasMenu
+                          isOpen={isMenuOpen}
+                          closeOffcanvas={handleFilterIconClick}
+                          onFilterChange={handleFilterChange}
+                        />
                       </div>
                     )}
-                  
-                    <div className="flex justify-end gap-2 mx-2 my-2">
-                      <button
-                        className="border border-custom-blue py-1 px-4 rounded"
-                        onClick={() => handleCandidateClick()}
-                      >
-                        View
-                      </button>
-                      <button className="border border-custom-blue py-1 px-4 rounded">
-                        Select
-                      </button>
-                    </div>
                   </div>
-                ))}
+                </div>
+
+                {/* cards code  */}
+                <div className="flex flex-wrap justify-between gap-6 p-4">
+                  {filteredData.map((interviewer, index) => (
+                    <div
+                      key={index}
+                      className=" w-[48%] border border-custom-blue rounded-md shadow-md bg-[#F5F9FA]"
+                      style={{
+                        height: expandedIndex === index ? 'auto' : '150px',
+                        overflowY: expandedIndex === index ? 'auto' : 'hidden',
+                      }}
+                    >
+                      <div className="p-2" >
+                        <div className="flex gap-4 items-start">
+                          {/* Left Section: Image, Rating, Price, Skills Label */}
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={interviewer.image}
+                              alt="interviewerImage"
+                              className="w-10 h-10 rounded-full"
+                            />
+                            <img
+                              src={interviewer.ratingImage}
+                              alt="Rating"
+                              className="w-10 h-5"
+                            />
+                            <p className="bg-blue-400 text-white text-xs rounded px-2 mb-1">
+                              {interviewer.price}
+                            </p>
+                            <p className="text-gray-400  mr-9 text-xs">Skills:</p>
+                          </div>
+
+                          {/* Right Section: Info and Skills Content */}
+                          <div className="flex-1 text-xs">
+                            <p className="font-bold text-blue-400 mb-1 relative group">
+                              {interviewer.name}
+                              <span className="absolute left-16 ml-2 px-2 py-1 text-xs font-normal bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                Name
+                              </span>
+                            </p>
+
+                            <p className="mb-1 relative group">
+                              {interviewer.company}
+                              <span className="absolute left-16 ml-2 px-2 py-1 text-xs bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                Company
+                              </span>
+                            </p>
+
+                            <p className="mb-1 relative group">
+                              {interviewer.role}
+                              <span className="absolute left-28 ml-2 px-2 py-1 text-xs bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                Role
+                              </span>
+                            </p>
+
+                            <p className="mb-1 relative group">
+                              {interviewer.experience}
+                              <span className="absolute left-16 ml-2 px-2 py-1 text-xs bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                Experience
+                              </span>
+                            </p>
+
+                            <div className="mb-1">
+                              <p className={`relative ${expandedIndex === index ? '' : 'overflow-hidden whitespace-nowrap overflow-ellipsis max-w-[100px]'}`}>
+                                {expandedIndex === index
+                                  ? `${interviewer.skills.substring(0, 40)}...`
+                                  : interviewer.skills}
+                              </p>
+                            </div>
+
+                          </div>
+
+
+                          {/* Toggle Arrow */}
+                          <div
+                            className="flex items-center text-2xl cursor-pointer"
+                            onClick={() => toggleIntroduction(index)}
+                          >
+                            {expandedIndex === index ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                          </div>
+                        </div>
+                        <div className="text-xs">
+                          {expandedIndex === index && (
+                            <p className="text-gray-400">Introduction:</p>
+                          )}
+                          <p>
+                            {expandedIndex === index
+                              ? `${interviewer.introduction.substring(0, 350)}${interviewer.introduction.length > 350 ? '...' : ''}`
+                              : ''}
+                          </p>
+                        </div>
+
+                      </div>
+
+                      {/* Buttons */}
+                      <div className="flex justify-end gap-4 p-2 -mt-3">
+                        <button
+                          className="border border-custom-blue py-1 px-2 bg-white rounded text-sm font-semibold hover:bg-blue-50"
+                          onClick={() => handleViewClick(interviewer)}
+                        >
+                          View
+                        </button>
+                        <button className="border border-custom-blue py-1 px-2 bg-white rounded text-sm font-semibold hover:bg-blue-50">
+                          Select
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
               </div>
 
-              <div className="footer-buttons flex justify-end">
-                <button type="submit" className="footer-button bg-custom-blue">
+
+              <div className="footer-buttons flex justify-end gap-6">
+                <button type="submit" className="footer-button bg-white text-black border border-custom-blue hover:bg-custom-blue hover:text-white">
                   Send Request
+                </button>
+                <button type="submit" className="footer-button bg-custom-blue">
+                  Schedule
                 </button>
               </div>
             </div>
-          </div>
-        </>
-      )}
-      {/* 
-      {selectedPersonId && (
-        <>
-        
-          <div className="border border-b relative flex justify-between items-center">
-            <div className="flex items-center p-2">
-              <button
-                className="text-2xl shadow px-2 ml-4 mr-5 text-black rounded"
-                onClick={() => toggleAntiContent()}
-              >
-                <IoArrowBack />
-              </button>
-              <p className="text-3xl">{selectedPersonId.Name}</p>
-            </div>
-            <div className="flex p-2">
-              <button className="px-4 py-1 mr-3 bg-blue-500 text-white rounded hover:bg-green-600">
-                Schedule
-              </button>
-              <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mr-12">
-                Send Request
-              </button>
-            </div>
-          </div>
-          <div>
-            <div className="mx-20 mt-10 text-sm">
-              <div className="grid grid-cols-4">
-            
-                <div className="col-span-1">
-                  <ul className="space-y-5">
-                    <li className="font-bold">Name</li>
-                    <li className="font-bold">Role</li>
-                    <li className="font-bold">Experience</li>
-                    <li className="font-bold">Company Name</li>
-                    <li className="font-bold">Technology</li>
-                    <li className="font-bold">Skills</li>
-                  </ul>
-                </div>
-               
-                <div className="col-span-1">
-                  <ul className="space-y-5">
-                    <li>{selectedPersonId.Name}</li>
-                    <li>{selectedPersonId.CurrentRole}</li>
-                    <li>{selectedPersonId.Experience}</li>
-                    <li>{selectedPersonId.company}</li>
-                    <li>-</li>
-                    <li>{selectedPersonId.Technology}</li>
-                  </ul>
-                </div>
-              
-                <div className="flex justify-end col-span-2">
-                  <div className="text-center space-y-1">
-                    <img
-                      src={selectedPersonId.imageUrl || femaleImage}
-                      alt={`Card ${selectedPersonId._id}`}
-                      className="w-32 h-32 rounded"
-                    />
-                    <img
-                      src={StarRating}
-                      alt=""
-                      width={130}
-                      className="bg-white rounded-lg -mt-1"
-                    />
-                    <p className="bg-blue-800 text-white py-2 w-32 text-md">
-                      INR: {selectedPersonId.inr}
-                    </p>
-                    <p className="bg-green-500 py-2 text-white mt-5 rounded-lg w-32 text-md">
-                      Available
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-5 space-y-3">
-                <p className="font-bold">Introduction</p>
-                <p>{selectedPersonId.Introduction}</p>
-              </div>
-            </div>
-          </div>
-        </>
-      )} */}
-      <OffcanvasMenu
-        isOpen={isMenuOpen}
-        closeOffcanvas={handleFilterIconClick}
-        onFilterChange={handleFilterChange}
-      />
 
-      {selectedPersonId && (
-        <div className={"fixed inset-0 bg-black bg-opacity-15 z-50"}>
-          <div className="fixed inset-y-0 right-0 z-50 w-full bg-white shadow-lg transition-transform duration-5000 transform">
-            <div className="container mx-auto">
-              <div className="grid grid-cols-4 mx-5">
-                {/* Left side */}
-                <div className="col-span-1 my-5">
-                  <div className="mx-3 border rounded-lg h-[525px] mb-5 flex flex-col items-center">
-                    <div className="mt-16">
-                      {selectedPersonId.imageUrl ? (
-                        <img
-                          src={selectedPersonId.imageUrl}
-                          alt="Candidate"
-                          className="w-32 h-32 rounded"
-                        />
-                      ) : selectedPersonId.Gender === "Male" ? (
-                        <img
-                          src={maleImage}
-                          alt="Male Avatar"
-                          className="w-32 h-32 rounded"
-                        />
-                      ) : selectedPersonId.Gender === "Female" ? (
-                        <img
-                          src={femaleImage}
-                          alt="Female Avatar"
-                          className="w-32 h-32 rounded"
-                        />
-                      ) : (
-                        <img
-                          src={genderlessImage}
-                          alt="Other Avatar"
-                          className="w-32 h-32 rounded"
-                        />
-                      )}
-                    </div>
-                    <div className="text-center mt-3">
-                      <h2 className="text-lg font-bold">Rupha</h2>
-                      <img
-                        src={StarRating}
-                        alt="5 stars"
-                        className="w-24 h-10 -mt-1 mx-auto"
-                      />
-                      <p className="bg-blue-400 text-white py-1 px-2 w-[82px] rounded mx-auto">
-                        INR 2000
-                      </p>{" "}
-                      <p>TCS</p>
-                      <p>Full stack Developer</p>
-                    </div>
-                  </div>
-                </div>
+          </div>
 
-                {/* Right side */}
-                <div className="col-span-3 my-5">
-                  <div className="flex justify-between sm:justify-start items-center">
-                    <p className="text-2xl">
-                      <span
-                        className="text-custom-blue font-semibold cursor-pointer"
-                        onClick={onClose}
-                      >
-                        Rupha
-                      </span>{" "}
-                    </p>
-                    <button
-                      type="submit"
-                      className="footer-button bg-custom-blue mb-2"
-                    >
-                      Send Request
-                    </button>
-                  </div>
-                  <div className="border p-4 rounded-md">
-                    <h3 className="text-lg font-bold mb-2">
-                      Interviewer Details:
-                    </h3>
-                    <div className="flex mb-5">
-                      <div className=" flex w-1/4">
-                        <p className="font-medium">Name</p>
+          {/* Detailed View */}
+          {selectedInterviewer && (
+            <div className={"fixed inset-0 bg-black bg-opacity-15 z-50"}>
+              <div className="fixed inset-y-0 right-0 z-50 w-full bg-white shadow-lg transition-transform duration-5000 transform">
+                <div className="container mx-auto">
+                  <div className="grid grid-cols-4 mx-5">
+                    {/* Left side */}
+                    <div className="col-span-1 my-5">
+                      <div className="mx-3 border rounded-lg h-[525px] mb-5 flex flex-col items-center">
+                        <div className="mt-16">
+                          <img
+                            src={selectedInterviewer.image}
+                            alt="Candidate"
+                            className="w-32 h-32 rounded"
+                          />
+                        </div>
+                        <div className="text-center mt-3">
+                          <h2 className="text-lg font-bold">{selectedInterviewer.name}</h2>
+                          <img
+                            src={StarRating}
+                            alt="5 stars"
+                            className="w-24 h-10 -mt-1 mx-auto"
+                          />
+                          <p className="bg-blue-400 text-white py-1 px-2 w-[82px] rounded mx-auto">
+                            {selectedInterviewer.price}
+                          </p>
+                          <p>{selectedInterviewer.company}</p>
+                          <p>{selectedInterviewer.role}</p>
+                        </div>
                       </div>
-                      <div className="w-1/4 sm:w-1/2">
-                        <p className="text-gray-500">Rupha</p>
+                    </div>
+
+                    {/* Right side */}
+                    <div className="col-span-3 my-5">
+                      <div className="flex justify-between sm:justify-start items-center">
+                        <p className="text-2xl">
+                          <span
+                            className="text-custom-blue font-semibold cursor-pointer"
+                            onClick={onClose}
+                          >
+                            {selectedInterviewer.name}
+                          </span>
+                        </p>
+                        <button
+                          type="submit"
+                          className="footer-button bg-custom-blue mb-2"
+                        >
+                          Send Request
+                        </button>
+                      </div>
+                      <div className="border p-4 rounded-md">
+                        <h3 className="text-lg font-bold mb-2">Interviewer Details:</h3>
+                        <div className="flex mb-5">
+                          <div className="flex w-1/4">
+                            <p className="font-medium">Name</p>
+                          </div>
+                          <div className="w-1/4 sm:w-1/2">
+                            <p className="text-gray-500">{selectedInterviewer.name}</p>
+                          </div>
+                          <div className="flex w-1/4">
+                            <p className="font-medium">Company Name</p>
+                          </div>
+                          <div className="w-1/4 sm:w-1/2">
+                            <p className="text-gray-500">{selectedInterviewer.company}</p>
+                          </div>
+                        </div>
+                        <div className="flex mb-5">
+                          <div className="flex w-1/4">
+                            <p className="font-medium">Role</p>
+                          </div>
+                          <div className="w-1/4 sm:w-1/2">
+                            <p className="text-gray-500">{selectedInterviewer.role}</p>
+                          </div>
+                          <div className="flex w-1/4">
+                            <p className="font-medium">Experience</p>
+                          </div>
+                          <div className="w-1/4 sm:w-1/2">
+                            <p className="text-gray-500">{selectedInterviewer.experience}</p>
+                          </div>
+                        </div>
+                        <div className="flex mb-5">
+                          <div className="flex w-1/4">
+                            <p className="font-medium">Skills</p>
+                          </div>
+                          <div className="w-1/4 sm:w-1/2">
+                            <p className="text-gray-500">{selectedInterviewer.skills}</p>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className=" flex w-1/4">
-                        <p className="font-medium">Company Name</p>
-                      </div>
-                      <div className="w-1/4 sm:w-1/2">
-                        <p className="text-gray-500">Accenture</p>
-                      </div>
-                    </div>
-                    <div className="flex mb-5">
-                      <div className=" flex w-1/4">
-                        <p className="font-medium">Role</p>
-                      </div>
-                      <div className="w-1/4 sm:w-1/2">
-                        <p className="text-gray-500">Full stack Developer</p>
-                      </div>
-                      <div className=" flex w-1/4">
-                        <p className="font-medium">Experience</p>
-                      </div>
-                      <div className="w-1/4 sm:w-1/2">
-                        <p className="text-gray-500">2-3 Years</p>
-                      </div>
-                    </div>
-                    <div className="flex mb-5">
-                      <div className=" flex w-1/4">
-                        <p className="font-medium">Skills</p>
-                      </div>
-                      <div className="w-1/4 sm:w-1/2">
-                        <p className="text-gray-500">
-                          Node.js, React.js, HTML, CSS, Java, JavaScript
+                      <div className="border p-4 rounded-md mt-4">
+                        <h3 className="text-lg font-bold mb-2">Introduction:</h3>
+                        <p className="text-gray-600">
+                          {selectedInterviewer.introduction}
                         </p>
                       </div>
                     </div>
                   </div>
-
-                  <div className="border p-4 rounded-md mt-4">
-                    <h3 className="text-lg font-bold mb-2">Introduction:</h3>
-                    <p className="text-gray-600">
-                      Experienced web developer with 5-7 years of hands-on
-                      expertise in crafting robust and dynamic web
-                      applications...
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+
+
+        </>
       )}
+
+
+
+
     </>
   );
 };
