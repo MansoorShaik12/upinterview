@@ -36,7 +36,6 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
   const [positionData, setPositionData] = useState(null);
   const [rounds, setRounds] = useState([
     { round: "", mode: "", dateTime: getCurrentDateTime() },
-    // { round: "", mode: "", dateTime: getCurrentDateTime() },y
   ]);
 
   const [unsavedChanges, setUnsavedChanges] = useState(false); // Track unsaved changes
@@ -476,7 +475,7 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
 
   const [selectedRound, setSelectedRound] = useState("");
   const [customRoundName, setCustomRoundName] = useState("");
-  const [selectedMode, setSelectedMode] = useState("");
+  // const [selectedMode, setSelectedMode] = useState("");
 
   const handleRoundTitleChange = (index, title) => {
     const newRounds = [...rounds];
@@ -529,10 +528,14 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
       setSelectedCandidate("");
       setSelectedPosition("");
       setSelectedPositionId("");
-      setRounds([
-        { round: "", mode: "", instructions: "" },
-        { round: "", mode: "", instructions: "" },
-      ]);
+      setRounds((prevRounds) =>
+        prevRounds.map(round => ({
+          ...round,
+          round: "",
+          mode: "",
+          instructions: ""
+        }))
+      );
     }
     setUnsavedChanges(true);
   };
@@ -627,11 +630,19 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
     }
   }, []);
 
+  const [expandedRounds, setExpandedRounds] = useState([]);
+
+  const toggleRoundDetails = (index) => {
+    setExpandedRounds((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
   return (
     <>
       {showMainContent ? (
         <>
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 mt-14 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div
               className="bg-white shadow-lg overflow-hidden"
               style={{ width: "100%", height: "100%" }}
@@ -644,17 +655,17 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
                       Schedule an Interview
                     </span>
                   </p>
-               
+
                 </div>
               </div>
 
               {/* Middle Content - Scrollable */}
               <div
-                className="overflow-y-auto"
+                className="overflow-y-auto flex-grow"
                 style={{ height: "calc(100% - 112px)" }}
               >
-                <div className="font-semibold text-xl mt-5 ml-10">
-                  Interview Details:
+                <div className="font-semibold text-xl mt-3 ml-10">
+                  Interview Details :
                   <div className="flex justify-between -mt-5 mr-10">
                     {roundsError && (
                       <p className="text-red-500 text-sm">{roundsError}</p>
@@ -663,15 +674,14 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
                     <div className="flex items-center">
                       <button
                         className="bg-custom-blue text-white font-bold py-1 px-2 text-sm rounded"
-                        //  ${!selectedCandidate ? 'opacity-50 cursor-not-allowed' : ''}`}
                         onClick={handleAddRoundClick}
-                        // disabled={!selectedCandidate}
                       >
                         Add Round
                       </button>
                     </div>
                   </div>
                 </div>
+
                 <div
                   className="flex gap-5 mt-8 mb-8"
                   style={{ padding: "0px 40px" }}
@@ -691,11 +701,10 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
                     <div className="relative flex-grow">
                       <input
                         type="text"
-                        className={`border-b focus:outline-none w-full ${
-                          errors.Candidate
+                        className={`border-b focus:outline-none w-full ${errors.Candidate
                             ? "border-red-500"
                             : "border-gray-300"
-                        }`}
+                          }`}
                         value={searchTerm}
                         onChange={handleInputChange}
                         onClick={handleInputClick}
@@ -761,7 +770,7 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
                     </label>
                     <input
                       type="text"
-                      className="border-b focus:outline-none w-full bg-white"
+                      className={`border-b focus:outline-none w-full bg-white ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                       value={selectedPosition}
                       readOnly
                     />
@@ -769,619 +778,627 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
                 </div>
                 <div>
                   <div className="mt-7">
-                    <div className="flex space-x-8 p-2 text-md justify-between items-center bg-custom-blue text-white pr-5 border-b border-gray-300 font-semibold text-xl mx-10">
-                      <p className="pr-4 ml-2 w-1/4">Round-1</p>
-                      <div className="flex items-center text-3xl ml-3 mr-3" onClick={toggleArrow2}>
-                        {isArrowUp2 ? <IoIosArrowUp /> : <IoIosArrowDown />}
-                      </div>
-                    </div>
 
                     {/* Always visible section */}
                     <div className="mx-5">
                       <div className="mb-5">
                         <div className="">
                           {rounds.map((round, index) => (
-                            <div key={index} className="border p-4 mx-5 text-sm" style={{ maxWidth: "100%" }}>
-                              {/* Round Title */}
-                              <div className="flex w-full mb-4 gap-5">
-                                <div className="flex items-center w-1/2 pr-2">
-                                  <label className="block flex-shrink-0 w-32">
-                                    Round Title <span className="text-red-500">*</span>
-                                  </label>
-                                  {selectedRound === "Other" ? (
-                                    <input
-                                      type="text"
-                                      disabled={!selectedCandidate}
-                                      className="flex-grow px-3 py-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
-                                      value={customRoundName}
-                                      onChange={(e) =>
-                                        setCustomRoundName(e.target.value)
-                                      }
-                                      placeholder="Enter round name"
-                                    />
+                            <div key={index} className="border mx-5 text-sm mb-10">
+                              <div className="flex space-x-8 p-2 text-md justify-between items-center bg-custom-blue text-white pr-5 border-b border-gray-300 font-semibold text-xl">
+                                <p className="pr-4 ml-2 w-1/4">Round-{index + 1}</p>
+                                <div
+                                  className="flex items-center text-3xl ml-3 mr-3"
+                                  onClick={() => toggleRoundDetails(index)}
+                                >
+                                  {expandedRounds.includes(index) ? (
+                                    <IoIosArrowUp />
                                   ) : (
-                                    <div className="relative flex-grow round-dropdown">
-                                      <div
-                                        className="w-full px-3 py-2 border-b border-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer"
-                                        onClick={() =>
-                                          selectedCandidate &&
-                                          setShowRoundDropdown(index)
-                                        }
-                                        disabled={!selectedCandidate}
-                                      >
-                                        {round.round || <span>&nbsp;</span>}
-                                      </div>
-                                      <MdArrowDropDown
-                                        className="absolute top-0 right-0 text-lg mt-4 text-gray-500 cursor-pointer"
-                                        onClick={() =>
-                                          selectedCandidate &&
-                                          setShowRoundDropdown(index)
-                                        }
-                                        disabled={!selectedCandidate}
-                                      />
-                                      {showRoundDropdown === index && (
-                                        <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
-                                          <div
-                                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                            onClick={() =>
-                                              handleRoundSelect(
-                                                index,
-                                                "Assessment"
-                                              )
-                                            }
-                                          >
-                                            Assessment
-                                          </div>
-                                          <div
-                                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                            onClick={() =>
-                                              handleRoundSelect(
-                                                index,
-                                                "Technical"
-                                              )
-                                            }
-                                          >
-                                            Technical
-                                          </div>
-                                          <div
-                                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                            onClick={() =>
-                                              handleRoundSelect(
-                                                index,
-                                                "Final"
-                                              )
-                                            }
-                                          >
-                                            Final
-                                          </div>
-                                          <div
-                                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                            onClick={() =>
-                                              handleRoundSelect(
-                                                index,
-                                                "HR Interview"
-                                              )
-                                            }
-                                          >
-                                            HR Interview
-                                          </div>
-                                          <div
-                                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                            onClick={() =>
-                                              handleRoundSelect(
-                                                index,
-                                                "Other"
-                                              )
-                                            }
-                                          >
-                                            Other
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
+                                    <IoIosArrowDown />
                                   )}
-                                </div>
-                                <div className="flex items-center w-1/2 pl-2">
-                                  <label className="text-left" style={{ width: "131px" }}>
-                                    Interview Mode <span className="text-red-500">*</span>
-                                  </label>
-                                  <div className="relative flex-grow">
-                                    <input
-                                      type="text"
-                                      value={round.mode}
-                                      disabled={
-                                        !selectedCandidate ||
-                                        round.round === "Assessment"
-                                      }
-                                      className="border-b p-2 flex-grow bg-white w-full focus:outline-none"
-                                      onClick={
-                                        selectedCandidate &&
-                                        round.round !== "Assessment"
-                                          ? () =>
-                                              toggleDropdownInterviewMode(
-                                                index
-                                              )
-                                          : null
-                                      }
-                                      readOnly
-                                      onChange={(e) =>
-                                        handleRoundChange(
-                                          index,
-                                          "mode",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                    <MdArrowDropDown
-                                      className="absolute top-0 text-gray-500 text-lg mt-4 cursor-pointer right-0"
-                                      onClick={
-                                        selectedCandidate &&
-                                        round.round !== "Assessment"
-                                          ? () =>
-                                              toggleDropdownInterviewMode(
-                                                index
-                                              )
-                                          : null
-                                      }
-                                      disabled={
-                                        !selectedCandidate ||
-                                        round.round === "Assessment"
-                                      }
-                                    />
-                                    {showDropdownInterviewMode === index && (
-                                      <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
-                                        {interviewModeOptions.map((mode) => (
-                                          <div
-                                            key={mode}
-                                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                            onClick={() =>
-                                              handleInterviewModeSelect(
-                                                index,
-                                                mode
-                                              )
-                                            }
-                                          >
-                                            {mode}
-                                          </div>
-                                        ))}
-                                      </div>
-                                    )}
-                                  </div>
                                 </div>
                               </div>
 
-                              <div className="flex w-full mb-4 gap-5">
-                                {/* Date & Time */}
-                                <>
+                              <div className="p-4">
+                                {/* Round Title */}
+                                <div className="flex w-full mb-4 gap-5">
                                   <div className="flex items-center w-1/2 pr-2">
-                                    <label className="w-40 text-left pt-2">
-                                      Date & Time{" "}
-                                      <span className="text-red-500">*</span>
+                                    <label className="block flex-shrink-0 w-32">
+                                      Round Title <span className="text-red-500">*</span>
                                     </label>
-                                    <input
-                                      type="text"
-                                      readOnly
-                                      disabled={!selectedCandidate}
-                                      value={round.dateTime || ""}
-                                      onClick={() => handleDateClick(index)}
-                                      className={`border-b py-2 bg-white flex-grow w-full focus:outline-none ${
-                                        errors.DateTime
-                                          ? "border-red-500"
-                                          : "border-gray-300"
-                                      }`}
-                                      onChange={(e) =>
-                                        handleRoundChange(
-                                          index,
-                                          "dateTime",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                  {showPopup &&
-                                    currentRoundIndex === index && (
-                                      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                                        <div className="bg-white p-5 rounded-lg shadow-lg w-1/3 relative">
-                                          <div className="mb-4">
-                                            <div className="flex justify-between items-center">
-                                              <label className="block mb-2 font-bold">
-                                                Select Date
-                                              </label>
-                                              <button
-                                                className="absolute top-2 right-2 rounded-full"
-                                                onClick={() =>
-                                                  setShowPopup(false)
-                                                }
-                                              >
-                                                <MdOutlineCancel className="text-2xl" />
-                                              </button>
-                                            </div>
-                                            <input
-                                              type="date"
-                                              className="border p-2 w-full"
-                                              min={getTodayDate()}
-                                              onChange={(e) =>
-                                                setSelectedDate(
-                                                  formatDate(e.target.value)
-                                                )
-                                              }
-                                            />
-                                          </div>
-                                          <div className="mb-4">
-                                            <label className="block mb-2 font-bold">
-                                              Start Time
-                                            </label>
-                                            <input
-                                              type="time"
-                                              className="border p-2 w-full"
-                                              onChange={handleStartTimeChange}
-                                              onFocus={() =>
-                                                setShowStartTimePicker(true)
-                                              }
-                                            />
-                                          </div>
-
-                                          {selectedDate &&
-                                            startTime &&
-                                            endTime && (
-                                              <button
-                                                onClick={handleConfirm}
-                                                className="px-4 py-2 bg-blue-500 text-white rounded float-right"
-                                              >
-                                                Confirm
-                                              </button>
-                                            )}
-                                        </div>
-                                      </div>
-                                    )}
-                                </>
-                                {/* Duration */}
-                                <div className="flex items-center w-1/2 pl-2">
-                                  <label className="text-left" style={{ width: "131px" }}>
-                                    Duration <span className="text-red-500">*</span>
-                                  </label>
-                                  <div className="relative flex-grow">
-                                    <div className="relative">
+                                    {selectedRound === "Other" ? (
                                       <input
                                         type="text"
                                         disabled={!selectedCandidate}
-                                        className="border-b p-2 flex-grow bg-white w-full focus:outline-none"
-                                        autoComplete="off"
-                                        value={selectedDuration[index]}
+                                        className="flex-grow px-3 py-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+                                        value={customRoundName}
+                                        onChange={(e) =>
+                                          setCustomRoundName(e.target.value)
+                                        }
+                                        placeholder="Enter round name"
+                                      />
+                                    ) : (
+                                      <div className="relative flex-grow round-dropdown">
+                                        <div
+                                          className={`w-full px-3 py-2 border-b border-gray-300 focus:outline-none focus:border-blue-500 ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                          onClick={() =>
+                                            selectedCandidate &&
+                                            setShowRoundDropdown(index)
+                                          }
+                                          disabled={!selectedCandidate}
+                                        >
+                                          {round.round || <span>&nbsp;</span>}
+                                        </div>
+                                        <MdArrowDropDown
+                                          className={`absolute top-0 right-0 text-lg mt-4 text-gray-500  ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                          onClick={() =>
+                                            selectedCandidate &&
+                                            setShowRoundDropdown(index)
+                                          }
+                                          disabled={!selectedCandidate}
+                                        />
+                                        {showRoundDropdown === index && (
+                                          <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
+                                            <div
+                                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                              onClick={() =>
+                                                handleRoundSelect(
+                                                  index,
+                                                  "Assessment"
+                                                )
+                                              }
+                                            >
+                                              Assessment
+                                            </div>
+                                            <div
+                                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                              onClick={() =>
+                                                handleRoundSelect(
+                                                  index,
+                                                  "Technical"
+                                                )
+                                              }
+                                            >
+                                              Technical
+                                            </div>
+                                            <div
+                                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                              onClick={() =>
+                                                handleRoundSelect(
+                                                  index,
+                                                  "Final"
+                                                )
+                                              }
+                                            >
+                                              Final
+                                            </div>
+                                            <div
+                                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                              onClick={() =>
+                                                handleRoundSelect(
+                                                  index,
+                                                  "HR Interview"
+                                                )
+                                              }
+                                            >
+                                              HR Interview
+                                            </div>
+                                            <div
+                                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                              onClick={() =>
+                                                handleRoundSelect(
+                                                  index,
+                                                  "Other"
+                                                )
+                                              }
+                                            >
+                                              Other
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center w-1/2 pl-2">
+                                    <label className="text-left" style={{ width: "131px" }}>
+                                      Interview Mode <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative flex-grow">
+                                      <input
+                                        type="text"
+                                        value={round.mode}
+                                        disabled={
+                                          !selectedCandidate ||
+                                          round.round === "Assessment"
+                                        }
+                                        className={`border-b p-2 flex-grow bg-white w-full focus:outline-none ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                         onClick={
-                                          selectedCandidate
+                                          selectedCandidate &&
+                                            round.round !== "Assessment"
                                             ? () =>
-                                                toggleDropdownduration(index)
+                                              toggleDropdownInterviewMode(
+                                                index
+                                              )
                                             : null
                                         }
                                         readOnly
                                         onChange={(e) =>
                                           handleRoundChange(
                                             index,
-                                            "duration",
+                                            "mode",
                                             e.target.value
                                           )
                                         }
                                       />
-                                      <div
-                                        className="absolute right-0 top-0"
+                                      <MdArrowDropDown
+                                        className={`absolute top-0 text-gray-500 text-lg mt-4 right-0 ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                         onClick={
-                                          selectedCandidate
+                                          selectedCandidate &&
+                                            round.round !== "Assessment"
                                             ? () =>
-                                                toggleDropdownduration(index)
+                                              toggleDropdownInterviewMode(
+                                                index
+                                              )
                                             : null
                                         }
-                                        disabled={!selectedCandidate}
-                                      >
-                                        <MdArrowDropDown className="text-lg text-gray-500 mt-4 cursor-pointer" />
-                                      </div>
+                                        disabled={
+                                          !selectedCandidate ||
+                                          round.round === "Assessment"
+                                        }
+                                      />
+                                      {showDropdownInterviewMode === index && (
+                                        <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
+                                          {interviewModeOptions.map((mode) => (
+                                            <div
+                                              key={mode}
+                                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                              onClick={() =>
+                                                handleInterviewModeSelect(
+                                                  index,
+                                                  mode
+                                                )
+                                              }
+                                            >
+                                              {mode}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
                                     </div>
-                                    {showDropdownduration === index && (
-                                      <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
-                                        {durationOptions.map((duration) => (
-                                          <div
-                                            key={duration}
-                                            className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                            onClick={() =>
-                                              handleDurationSelect(
-                                                index,
-                                                duration
-                                              )
-                                            }
-                                          >
-                                            {duration}
-                                          </div>
-                                        ))}
-                                      </div>
-                                    )}
                                   </div>
                                 </div>
-                              </div>
 
-                              {/* Conditionally visible section */}
-                              {isArrowUp2 && (
-                                <div>
-                                  {/* Interviewer */}
-                                  <div className="flex w-full mb-4 gap-5">
+                                <div className="flex w-full mb-4 gap-5">
+                                  {/* Date & Time */}
+                                  <>
                                     <div className="flex items-center w-1/2 pr-2">
-                                      <label className="text-left" style={{ width: "131px" }}>
-                                        Interview Type <span className="text-red-500">*</span>
+                                      <label className="w-40 text-left pt-2">
+                                        Date & Time{" "}
+                                        <span className="text-red-500">*</span>
                                       </label>
-                                      <div className="relative flex-grow">
+                                      <input
+                                        type="text"
+                                        readOnly
+                                        disabled={!selectedCandidate}
+                                        value={round.dateTime || ""}
+                                        onClick={() => handleDateClick(index)}
+                                        className={`border-b py-2 bg-white flex-grow w-full focus:outline-none ${errors.DateTime
+                                            ? "border-red-500"
+                                            : "border-gray-300"
+                                          } ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                        onChange={(e) =>
+                                          handleRoundChange(
+                                            index,
+                                            "dateTime",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                    {showPopup &&
+                                      currentRoundIndex === index && (
+                                        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                                          <div className="bg-white p-5 rounded-lg shadow-lg w-1/3 relative">
+                                            <div className="mb-4">
+                                              <div className="flex justify-between items-center">
+                                                <label className="block mb-2 font-bold">
+                                                  Select Date
+                                                </label>
+                                                <button
+                                                  className="absolute top-2 right-2 rounded-full"
+                                                  onClick={() =>
+                                                    setShowPopup(false)
+                                                  }
+                                                >
+                                                  <MdOutlineCancel className="text-2xl" />
+                                                </button>
+                                              </div>
+                                              <input
+                                                type="date"
+                                                className="border p-2 w-full"
+                                                min={getTodayDate()}
+                                                onChange={(e) =>
+                                                  setSelectedDate(
+                                                    formatDate(e.target.value)
+                                                  )
+                                                }
+                                              />
+                                            </div>
+                                            <div className="mb-4">
+                                              <label className="block mb-2 font-bold">
+                                                Start Time
+                                              </label>
+                                              <input
+                                                type="time"
+                                                className="border p-2 w-full"
+                                                onChange={handleStartTimeChange}
+                                                onFocus={() =>
+                                                  setShowStartTimePicker(true)
+                                                }
+                                              />
+                                            </div>
+
+                                            {selectedDate &&
+                                              startTime &&
+                                              endTime && (
+                                                <button
+                                                  onClick={handleConfirm}
+                                                  className="px-4 py-2 bg-blue-500 text-white rounded float-right"
+                                                >
+                                                  Confirm
+                                                </button>
+                                              )}
+                                          </div>
+                                        </div>
+                                      )}
+                                  </>
+                                  {/* Duration */}
+                                  <div className="flex items-center w-1/2 pl-2">
+                                    <label className="text-left" style={{ width: "131px" }}>
+                                      Duration <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative flex-grow">
+                                      <div className="relative">
                                         <input
                                           type="text"
-                                          value={round.mode}
-                                          disabled={
-                                            !selectedCandidate ||
-                                            round.round === "Assessment"
-                                          }
-                                          className="border-b flex-grow bg-white w-full focus:outline-none"
+                                          disabled={!selectedCandidate}
+                                          className={`border-b p-2 flex-grow bg-white w-full focus:outline-none ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                          autoComplete="off"
+                                          value={selectedDuration[index]}
                                           onClick={
-                                            selectedCandidate &&
-                                            round.round !== "Assessment"
+                                            selectedCandidate
                                               ? () =>
-                                                  toggleDropdownInterviewMode(
-                                                    index
-                                                  )
+                                                toggleDropdownduration(index)
                                               : null
                                           }
                                           readOnly
                                           onChange={(e) =>
                                             handleRoundChange(
                                               index,
-                                              "mode",
+                                              "duration",
                                               e.target.value
                                             )
                                           }
                                         />
-                                        <MdArrowDropDown
-                                          className="absolute top-0 text-gray-500 text-lg cursor-pointer right-0"
+                                        <div
+                                          className="absolute right-0 top-0"
                                           onClick={
-                                            selectedCandidate &&
-                                            round.round !== "Assessment"
+                                            selectedCandidate
                                               ? () =>
+                                                toggleDropdownduration(index)
+                                              : null
+                                          }
+                                          disabled={!selectedCandidate}
+                                        >
+                                          <MdArrowDropDown className={`text-lg text-gray-500 mt-4  ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`} />
+                                        </div>
+                                      </div>
+                                      {showDropdownduration === index && (
+                                        <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
+                                          {durationOptions.map((duration) => (
+                                            <div
+                                              key={duration}
+                                              className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                              onClick={() =>
+                                                handleDurationSelect(
+                                                  index,
+                                                  duration
+                                                )
+                                              }
+                                            >
+                                              {duration}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Conditionally visible section */}
+                                {expandedRounds.includes(index) && (
+                                  <div>
+                                    {/* Interviewer */}
+                                    <div className="flex w-full mb-4 gap-5">
+                                      <div className="flex items-center w-1/2 pr-2">
+                                        <label className="text-left" style={{ width: "131px" }}>
+                                          Interview Type <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative flex-grow">
+                                          <input
+                                            type="text"
+                                            value={round.mode}
+                                            disabled={
+                                              !selectedCandidate ||
+                                              round.round === "Assessment"
+                                            }
+                                            className={`border-b flex-grow bg-white w-full focus:outline-none ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                            onClick={
+                                              selectedCandidate &&
+                                                round.round !== "Assessment"
+                                                ? () =>
                                                   toggleDropdownInterviewMode(
                                                     index
                                                   )
-                                              : null
-                                          }
-                                          disabled={
-                                            !selectedCandidate ||
-                                            round.round === "Assessment"
-                                          }
-                                        />
-                                        {showDropdownInterviewMode === index && (
-                                          <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
-                                            {interviewModeOptions.map((mode) => (
-                                              <div
-                                                key={mode}
-                                                className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                                onClick={() =>
-                                                  handleInterviewModeSelect(
-                                                    index,
-                                                    mode
-                                                  )
-                                                }
-                                              >
-                                                {mode}
-                                              </div>
-                                            ))}
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center w-1/2 pl-2">
-                                      <label className="text-left mt-1 mr-4" style={{ width: "114px" }}>
-                                        Interviewers <span className="text-red-500">*</span>
-                                      </label>
-                                      <div className="relative flex-grow">
-                                        <div className="relative mb-3">
-                                          <div
-                                            disabled={!selectedCandidate}
-                                            className={`border-b focus:border-black focus:outline-none min-h-8 bg-white mb-5 h-auto w-full relative mt-2 ${
-                                              errors.Interviewer
-                                                ? "border-red-500"
-                                                : "border-gray-300 focus:border-black"
-                                            }`}
-                                            onClick={
-                                              selectedCandidate
-                                                ? () =>
-                                                    handleInterviewerFieldClick(
-                                                      index
-                                                    )
                                                 : null
                                             }
-                                          >
-                                            <div className="flex flex-wrap">
-                                              {round.interviewers &&
-                                                round.interviewers.map(
-                                                  (member) => (
-                                                    <div
-                                                      key={member.id}
-                                                      className="bg-slate-200 rounded-lg px-2 py-1 inline-block mr-2 -mt-2"
-                                                    >
-                                                      {member.name}
-                                                      <button
-                                                        onClick={() =>
-                                                          removeSelectedTeamMember(
-                                                            member,
-                                                            index
-                                                          )
-                                                        }
-                                                        className="ml-1 bg-slate-300 rounded-lg px-2"
-                                                      >
-                                                        X
-                                                      </button>
-                                                    </div>
+                                            readOnly
+                                            onChange={(e) =>
+                                              handleRoundChange(
+                                                index,
+                                                "mode",
+                                                e.target.value
+                                              )
+                                            }
+                                          />
+                                          <MdArrowDropDown
+                                            className={`absolute top-0 text-gray-500 text-lg right-0 ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                            onClick={
+                                              selectedCandidate &&
+                                                round.round !== "Assessment"
+                                                ? () =>
+                                                  toggleDropdownInterviewMode(
+                                                    index
                                                   )
-                                                )}
+                                                : null
+                                            }
+                                            disabled={
+                                              !selectedCandidate ||
+                                              round.round === "Assessment"
+                                            }
+                                          />
+                                          {showDropdownInterviewMode === index && (
+                                            <div className="absolute z-50 border border-gray-200 mb-5 w-full rounded-md bg-white shadow-lg">
+                                              {interviewModeOptions.map((mode) => (
+                                                <div
+                                                  key={mode}
+                                                  className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                                  onClick={() =>
+                                                    handleInterviewModeSelect(
+                                                      index,
+                                                      mode
+                                                    )
+                                                  }
+                                                >
+                                                  {mode}
+                                                </div>
+                                              ))}
                                             </div>
-                                            <div className="absolute top-0 right-5">
-                                              {round.interviewers &&
-                                                round.interviewers.length > 0 && (
-                                                  <button
-                                                    onClick={() =>
-                                                      clearSelectedTeamMembers(
-                                                        index
-                                                      )
-                                                    }
-                                                    className="bg-slate-300 rounded-lg px-2 -mt-2"
-                                                  >
-                                                    X
-                                                  </button>
-                                                )}
-                                            </div>
-                                          </div>
-                                          {currentPage !==
-                                            "/outsourceinterview" && (
-                                            <MdArrowDropDown
-                                              className="absolute top-0 text-gray-500 text-lg mt-3 cursor-pointer right-0"
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center w-1/2 pl-2">
+                                        <label className="text-left mt-1 mr-4" style={{ width: "114px" }}>
+                                          Interviewers <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="relative flex-grow">
+                                          <div className="relative mb-3">
+                                            <div
+                                              disabled={!selectedCandidate}
+                                              className={`border-b focus:border-black focus:outline-none min-h-8 bg-white mb-5 h-auto w-full relative mt-2 ${errors.Interviewer
+                                                  ? "border-red-500"
+                                                  : "border-gray-300 focus:border-black"
+                                                } ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                               onClick={
                                                 selectedCandidate
                                                   ? () =>
-                                                      handleInterviewerFieldClick(
-                                                        index
-                                                      )
+                                                    handleInterviewerFieldClick(
+                                                      index
+                                                    )
                                                   : null
                                               }
-                                            />
-                                          )}
-                                        </div>
-                                        {/* {errors[`Interviewer_${index}`] && <p className="text-red-500 text-sm -mt-2 ml-32">{errors[`Interviewer_${index}`]}</p>} */}
-                                        {showDropdowninterview === index && (
-                                          <div className="absolute z-50 border border-gray-200 mb-5 top-8 w-full rounded-md bg-white shadow">
-                                            {interviews.map((interview) => (
-                                              <div
-                                                key={interview}
-                                                className="py-2 px-4 cursor-pointer hover:bg-gray-100"
-                                                onClick={() =>
-                                                  handleinterviewSelect(
-                                                    interview,
-                                                    index
-                                                  )
-                                                }
-                                              >
-                                                {interview}
-                                              </div>
-                                            ))}
-                                          </div>
-                                        )}
-                                        {isTeamMemberSelected && (
-                                          <div className="relative flex-grow mt-4">
-                                            <div className="relative">
-                                              <input
-                                                type="text"
-                                                className="border-b border-gray-300 focus:border-black focus:outline-none mb-5 w-full mt-3"
-                                                placeholder="Select Team Member"
-                                                onClick={toggleDropdownTeamMember}
-                                                readOnly
-                                              />
-                                              {showTeamMemberDropdown && (
-                                                <div className="flex gap-5 mb-5 -mt-4 relative w-full">
-                                                  <div className="relative flex-grow">
-                                                    <div className="relative bg-white border cursor-pointer shadow">
-                                                      <p className="p-1 font-medium">
-                                                        Recent Team Members
-                                                      </p>
-                                                      <div>
-                                                        {teamData
-                                                          .slice(0, 4)
-                                                          .map((team) => (
-                                                            <div
-                                                              key={team._id}
-                                                              className="bg-white border-b cursor-pointer p-1 hover:bg-gray-100"
-                                                              onClick={() =>
-                                                                handleTeamMemberSelect(
-                                                                  team,
-                                                                  index
-                                                                )
-                                                              } // Pass index
-                                                            >
-                                                              <div className="text-black flex p-1">
-                                                                {team.LastName}
-                                                              </div>
-                                                            </div>
-                                                          ))}
-                                                      </div>
-                                                      <p
-                                                        onClick={newteammember}
-                                                        className="flex cursor-pointer border-b p-1 rounded"
+                                            >
+                                              <div className="flex flex-wrap">
+                                                {round.interviewers &&
+                                                  round.interviewers.map(
+                                                    (member) => (
+                                                      <div
+                                                        key={member.id}
+                                                        className="bg-slate-200 rounded-lg px-2 py-1 inline-block mr-2 -mt-2"
                                                       >
-                                                        <IoIosAddCircle className="text-2xl" />
-                                                        <span>
-                                                          Add New Team Member
-                                                        </span>
-                                                      </p>
+                                                        {member.name}
+                                                        <button
+                                                          onClick={() =>
+                                                            removeSelectedTeamMember(
+                                                              member,
+                                                              index
+                                                            )
+                                                          }
+                                                          className="ml-1 bg-slate-300 rounded-lg px-2"
+                                                        >
+                                                          X
+                                                        </button>
+                                                      </div>
+                                                    )
+                                                  )}
+                                              </div>
+                                              <div className="absolute top-0 right-5">
+                                                {round.interviewers &&
+                                                  round.interviewers.length > 0 && (
+                                                    <button
+                                                      onClick={() =>
+                                                        clearSelectedTeamMembers(
+                                                          index
+                                                        )
+                                                      }
+                                                      className="bg-slate-300 rounded-lg px-2 -mt-2"
+                                                    >
+                                                      X
+                                                    </button>
+                                                  )}
+                                              </div>
+                                            </div>
+                                            {currentPage !==
+                                              "/outsourceinterview" && (
+                                                <MdArrowDropDown
+                                                  className={`absolute top-0 text-gray-500 text-lg mt-3 right-0 ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                                  onClick={
+                                                    selectedCandidate
+                                                      ? () =>
+                                                        handleInterviewerFieldClick(
+                                                          index
+                                                        )
+                                                      : null
+                                                  }
+                                                />
+                                              )}
+                                          </div>
+                                          {/* {errors[`Interviewer_${index}`] && <p className="text-red-500 text-sm -mt-2 ml-32">{errors[`Interviewer_${index}`]}</p>} */}
+                                          {showDropdowninterview === index && (
+                                            <div className="absolute z-50 border border-gray-200 mb-5 top-8 w-full rounded-md bg-white shadow">
+                                              {interviews.map((interview) => (
+                                                <div
+                                                  key={interview}
+                                                  className="py-2 px-4 cursor-pointer hover:bg-gray-100"
+                                                  onClick={() =>
+                                                    handleinterviewSelect(
+                                                      interview,
+                                                      index
+                                                    )
+                                                  }
+                                                >
+                                                  {interview}
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+                                          {isTeamMemberSelected && (
+                                            <div className="relative flex-grow mt-4">
+                                              <div className="relative">
+                                                <input
+                                                  type="text"
+                                                  className="border-b border-gray-300 focus:border-black focus:outline-none mb-5 w-full mt-3"
+                                                  placeholder="Select Team Member"
+                                                  onClick={toggleDropdownTeamMember}
+                                                  readOnly
+                                                />
+                                                {showTeamMemberDropdown && (
+                                                  <div className="flex gap-5 mb-5 -mt-4 relative w-full">
+                                                    <div className="relative flex-grow">
+                                                      <div className="relative bg-white border cursor-pointer shadow">
+                                                        <p className="p-1 font-medium">
+                                                          Recent Team Members
+                                                        </p>
+                                                        <div>
+                                                          {teamData
+                                                            .slice(0, 4)
+                                                            .map((team) => (
+                                                              <div
+                                                                key={team._id}
+                                                                className="bg-white border-b cursor-pointer p-1 hover:bg-gray-100"
+                                                                onClick={() =>
+                                                                  handleTeamMemberSelect(
+                                                                    team,
+                                                                    index
+                                                                  )
+                                                                } // Pass index
+                                                              >
+                                                                <div className="text-black flex p-1">
+                                                                  {team.LastName}
+                                                                </div>
+                                                              </div>
+                                                            ))}
+                                                        </div>
+                                                        <p
+                                                          onClick={newteammember}
+                                                          className="flex cursor-pointer border-b p-1 rounded"
+                                                        >
+                                                          <IoIosAddCircle className="text-2xl" />
+                                                          <span>
+                                                            Add New Team Member
+                                                          </span>
+                                                        </p>
+                                                      </div>
                                                     </div>
                                                   </div>
-                                                </div>
-                                              )}
-                                              <MdArrowDropDown className="absolute top-0 text-gray-500 text-lg mt-3 cursor-pointer right-0" />
+                                                )}
+                                                <MdArrowDropDown className="absolute top-0 text-gray-500 text-lg mt-3 cursor-pointer right-0" />
+                                              </div>
                                             </div>
-                                          </div>
-                                        )}
-                                        {showConfirmation && (
-                                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-200 bg-opacity-50">
-                                            <div className="relative bg-white rounded-lg p-6">
-                                              <button
-                                                className="absolute top-2 right-2 rounded-full"
-                                                onClick={() =>
-                                                  setShowConfirmation(false)
-                                                }
-                                              >
-                                                <MdOutlineCancel className="text-2xl" />
-                                              </button>
-                                              <p className="text-lg mt-3 ">
-                                                Do you want only outsourced
-                                                interviewers?
-                                              </p>
-                                              <div className="mt-4 flex justify-center">
+                                          )}
+                                          {showConfirmation && (
+                                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-200 bg-opacity-50">
+                                              <div className="relative bg-white rounded-lg p-6">
                                                 <button
-                                                  className="bg-gray-300 text-gray-700 rounded px-8 py-2 mr-2"
+                                                  className="absolute top-2 right-2 rounded-full"
                                                   onClick={() =>
                                                     setShowConfirmation(false)
                                                   }
                                                 >
-                                                  No
+                                                  <MdOutlineCancel className="text-2xl" />
                                                 </button>
-                                                <button
-                                                  className="bg-gray-300 text-gray-700 rounded px-8 py-2 ml-11"
-                                                  onClick={
-                                                    handleAddInterviewClick
-                                                  }
-                                                >
-                                                  Yes
-                                                </button>
+                                                <p className="text-lg mt-3 ">
+                                                  Do you want only outsourced
+                                                  interviewers?
+                                                </p>
+                                                <div className="mt-4 flex justify-center">
+                                                  <button
+                                                    className="bg-gray-300 text-gray-700 rounded px-8 py-2 mr-2"
+                                                    onClick={() =>
+                                                      setShowConfirmation(false)
+                                                    }
+                                                  >
+                                                    No
+                                                  </button>
+                                                  <button
+                                                    className="bg-gray-300 text-gray-700 rounded px-8 py-2 ml-11"
+                                                    onClick={
+                                                      handleAddInterviewClick
+                                                    }
+                                                  >
+                                                    Yes
+                                                  </button>
+                                                </div>
                                               </div>
                                             </div>
-                                          </div>
-                                        )}
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    {/* Instructions */}
+                                    <div className="flex items-center gap-14 pr-2">
+                                      <label className="text-left mb-32">Instructions</label>
+                                      <div className="flex-grow">
+                                        <textarea
+                                          rows={5}
+                                          value={round.instructions}
+                                          disabled={!selectedCandidate}
+                                          name="instructions"
+                                          id="instructions"
+                                          className={`border p-2 focus:outline-none mb-3 w-full rounded-md ${errors.instructions ? "border-red-500" : "border-gray-300"
+                                            } ${!selectedCandidate ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                          onChange={(e) => handleChangedescription(e, index)}
+                                        ></textarea>
+                                        <p className="text-gray-600 text-sm float-right -mt-4">
+                                          {round.instructions ? round.instructions.length : 0}/1000
+                                        </p>
                                       </div>
                                     </div>
                                   </div>
+                                )}
+                              </div>
 
-                                  {/* Instructions */}
-                                  <div className="flex items-center gap-14 pr-2">
-                                    <label className="text-left mb-32">Instructions</label>
-                                    <div className="flex-grow">
-                                      <textarea
-                                        rows={5}
-                                        value={round.instructions}
-                                        disabled={!selectedCandidate}
-                                        name="instructions"
-                                        id="instructions"
-                                        className={`border p-2 focus:outline-none mb-3 w-full rounded-md ${
-                                          errors.instructions ? "border-red-500" : "border-gray-300"
-                                        }`}
-                                        onChange={(e) => handleChangedescription(e, index)}
-                                      ></textarea>
-                                      <p className="text-gray-600 text-sm float-right -mt-4">
-                                        {round.instructions ? round.instructions.length : 0}/1000
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
                             </div>
                           ))}
                         </div>
@@ -1393,14 +1410,14 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
 
               {/* Save Button - Fixed */}
               <div className="flex justify-end border-t">
-                   <button
+                <button
                   className="border border-custom-blue mt-3 p-3 rounded py-1 mr-5"
                   onClick={handleClose}
-                  >
-                    Cancel
-                  </button>
+                >
+                  Cancel
+                </button>
                 <button
-                  className="bg-blue-500 mt-3 text-white p-3 rounded py-1 shadow-lg mr-5"
+                  className="bg-custom-blue mt-3 text-white p-3 rounded py-1 shadow-lg mr-5"
                   onClick={handleSave}
                 >
                   Schedule
@@ -1537,7 +1554,7 @@ const Schedulenow = ({ onClose, onDataAdded }) => {
         </div>
       )}
 
-{isSidebarOpen && (
+      {isSidebarOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-15 z-50">
           <div className="fixed inset-y-0 right-0 z-50 sm:w-full md:w-3/4 lg:w-1/2 xl:w-1/2 2xl:w-1/2 bg-white shadow-lg transition-transform duration-5000 transform">
             <Sidebar
